@@ -9,7 +9,6 @@ Managerowie korporacyjni tracą kontrolę nad licznymi wątkami projektowymi i a
 - Automatyczne przetwarzanie transkrypcji przez AI w celu:
   - aktualizacji statusów istniejących action pointów (wykonane, zaniechane, w toku)
   - generowania nowych action pointów z treści spotkania
-- Historia spotkań oraz action pointów w ramach wątku
 - Prosty panel użytkownika do przeglądania aktualnego stanu realizacji
 
 ### Co NIE wchodzi w zakres MVP
@@ -21,6 +20,4 @@ Managerowie korporacyjni tracą kontrolę nad licznymi wątkami projektowymi i a
 
 ### Kryteria sukcesu
 - Użytkownicy są w stanie utrzymać pełną aktualność statusów w minimum 10 wątkach równocześnie
-- Action pointy są automatycznie aktualizowane po każdym spotkaniu w 80% przypadków  
-- Historia wątków i spotkań jest przejrzysta i łatwa do przeglądania  
 - Użytkownicy deklarują oszczędność czasu podczas planowania i follow-upów
