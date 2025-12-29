@@ -22,11 +22,6 @@ All endpoints are prefixed with `/api` and require a valid Supabase auth JWT (Be
 | PATCH | `/api/threads/{threadId}` | Rename thread. |
 | DELETE | `/api/threads/{threadId}` | Hard-delete thread and cascade children. |
 
-**Query Parameters (list)**
-- `page` (number, default 1)
-- `pageSize` (number, default 20, max 50)
-- `sort` (enum `created_at`\|`name` , default `created_at`)
-
 **Request → POST /api/threads**
 ```json
 {
