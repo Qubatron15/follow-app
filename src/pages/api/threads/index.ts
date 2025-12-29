@@ -52,7 +52,7 @@ export async function POST(context: APIContext): Promise<Response> {
     }
 
     // Step 5: Create thread using service layer
-    const threadData = await threadsService.createThread(supabase, 'user_id', validationResult.data.name);
+    const threadData = await threadsService.createThread(supabase, '24a19ed0-7584-4377-a10f-326c63d9f927', validationResult.data.name);
 
     // Step 6: Return successful response
     const successResponse = {
