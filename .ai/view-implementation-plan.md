@@ -1,7 +1,27 @@
-# API Endpoint Implementation Plan: POST /api/threads
+# API Endpoint Implementation Plan: Action Points Endpoints
 
 ## 1. Przegląd punktu końcowego
-Tworzy nowy wątek ("thread") dla zalogowanego użytkownika.  Każdy użytkownik może posiadać maksymalnie 20 wątków, a nazwy wątków muszą być unikalne (case-sensitive) w obrębie tego użytkownika.
+"Action Point" (AP) reprezentuje pojedyncze, możliwe do wykonania zadanie wyekstrahowane z konwersacji (wątku).  Zestaw czterech endpointów pozwala:
+1. Pobierać listę AP‐ów dla danego wątku (z filtrem wykonania).
+2. Dodawać AP manualnie do wątku.
+3. Aktualizować treść lub status istniejącego AP.
+4. Usuwać AP.
+
+Endpointy muszą egzekwować BOLA – użytkownik może operować wyłącznie na AP należących do własnych wątków.
+
+
+## 2. Szczegóły żądania
+### GET /api/threads/{threadId}/action-points
+- **Metoda HTTP:** `GET`
+- **URL:** `/api/threads/{threadId}/action-points`
+- **Parametry ścieżki:**
+  - `threadId : UUID` – ID wątku (wymagany)
+- **Query params:**
+  - `page : number` – numer strony ≥1 (domyślnie 1)
+  - `limit : number` – rozmiar strony 1-100 (domyślnie 20)
+  - `completed : boolean` – filtr ukończenia (`true|false`), opcjonalny
+
+... ("thread") dla zalogowanego użytkownika.  Każdy użytkownik może posiadać maksymalnie 20 wątków, a nazwy wątków muszą być unikalne (case-sensitive) w obrębie tego użytkownika.
 
 ## 2. Szczegóły żądania
 - **Metoda HTTP:** `POST`
