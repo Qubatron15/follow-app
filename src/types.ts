@@ -80,3 +80,13 @@ export interface ErrorResponse {
     message: string;
   };
 }
+
+/**
+ * View model for the Welcome page state.
+ * Tracks loading state, errors, and threads data.
+ */
+export interface WelcomeViewModel {
+  isLoading: boolean;
+  error: string | null;
+  threads: ThreadDTO[];
+}

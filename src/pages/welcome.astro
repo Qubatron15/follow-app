@@ -1,0 +1,10 @@
+---
+import Layout from "../layouts/Layout.astro";
+import WelcomePage from "../components/WelcomePage";
+
+export const prerender = false;
+---
+
+<Layout title="Welcome - FollowApp">
+  <WelcomePage client:load />
+</Layout>
