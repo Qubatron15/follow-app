@@ -1,0 +1,19 @@
+---
+import Layout from "@/layouts/Layout.astro";
+import DashboardThreadsPage from "@/components/DashboardThreadsPage";
+
+// Auth guard - check if user is authenticated
+// For now, we'll implement a basic check. In production, this should verify session
+const user = Astro.locals.user;
+
+// If no user session, redirect to login
+if (!user) {
+  return Astro.redirect("/login");
+}
+
+export const prerender = false;
+---
+
+<Layout title="Wątki - FollowApp">
+  <DashboardThreadsPage client:load />
+</Layout>
