@@ -1,6 +1,8 @@
 import type { ErrorResponse } from "../../types";
 import { ThreadServiceError } from "../services/threads.service";
+import { TranscriptServiceError } from "../services/transcripts.service";
 import { THREAD_ERRORS } from "../schemas/threads.schema";
+import { TRANSCRIPT_ERRORS } from "../schemas/transcripts.schema";
 
 /**
  * Maps service errors to HTTP status codes.
@@ -12,6 +14,12 @@ const ERROR_STATUS_MAP: Record<string, number> = {
   [THREAD_ERRORS.THREAD_LIMIT_REACHED]: 429,
   [THREAD_ERRORS.AUTH_REQUIRED]: 401,
   [THREAD_ERRORS.INTERNAL_SERVER_ERROR]: 500,
+  [TRANSCRIPT_ERRORS.TRANSCRIPT_CONTENT_INVALID]: 400,
+  [TRANSCRIPT_ERRORS.TRANSCRIPT_NOT_FOUND]: 404,
+  [TRANSCRIPT_ERRORS.THREAD_NOT_FOUND]: 404,
+  [TRANSCRIPT_ERRORS.VALIDATION_ERROR]: 400,
+  [TRANSCRIPT_ERRORS.AUTH_REQUIRED]: 401,
+  [TRANSCRIPT_ERRORS.INTERNAL_SERVER_ERROR]: 500,
 } as const;
 
 /**
@@ -31,15 +39,15 @@ export function createErrorResponse(code: string, message: string): ErrorRespons
 }
 
 /**
- * Maps ThreadServiceError to HTTP Response with appropriate status code.
+ * Maps ThreadServiceError or TranscriptServiceError to HTTP Response with appropriate status code.
  * Provides consistent error response format and logging.
- * 
- * @param error - ThreadServiceError instance
+ *
+ * @param error - ThreadServiceError or TranscriptServiceError instance
  * @param requestId - Optional request ID for logging correlation
  * @returns HTTP Response with error details
  */
 export function mapServiceErrorToHttpResponse(
-  error: ThreadServiceError,
+  error: ThreadServiceError | TranscriptServiceError,
   requestId?: string
 ): Response {
   // Log error with request correlation if available
