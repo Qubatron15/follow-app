@@ -58,6 +58,29 @@ function DashboardThreadsContent() {
     });
   };
 
+  const handleThreadUpdated = async (thread: ThreadDTO) => {
+    // Refresh the threads list from the server
+    await refetch();
+
+    toast.success("Wątek zaktualizowany", {
+      description: `Nazwa wątku została zmieniona na "${thread.name}".`,
+    });
+  };
+
+  const handleThreadDeleted = async (threadId: string) => {
+    // If deleted thread was active, clear active thread
+    if (activeThreadId === threadId) {
+      setActiveThreadId(null);
+    }
+
+    // Refresh the threads list from the server
+    await refetch();
+
+    toast.success("Wątek usunięty", {
+      description: "Wątek i wszystkie powiązane dane zostały usunięte.",
+    });
+  };
+
   const handleTranscriptChange = (value: string) => {
     updateTranscriptDraft(value);
   };
@@ -110,6 +133,8 @@ function DashboardThreadsContent() {
         activeThreadId={activeThreadId}
         onSelect={handleThreadSelect}
         onThreadCreated={handleThreadCreated}
+        onThreadUpdated={handleThreadUpdated}
+        onThreadDeleted={handleThreadDeleted}
       />
 
       {threads.length === 0 ? (

@@ -1,7 +1,15 @@
 import { useState } from "react";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import CreateThreadModal from "@/components/CreateThreadModal";
+import EditThreadModal from "@/components/EditThreadModal";
+import DeleteThreadDialog from "@/components/DeleteThreadDialog";
 import type { ThreadDTO } from "@/types";
 
 interface ThreadTabsProps {
@@ -9,6 +17,8 @@ interface ThreadTabsProps {
   activeThreadId: string | null;
   onSelect: (threadId: string) => void;
   onThreadCreated: (thread: ThreadDTO) => void;
+  onThreadUpdated: (thread: ThreadDTO) => void;
+  onThreadDeleted: (threadId: string) => void;
 }
 
 /**
@@ -20,20 +30,57 @@ export default function ThreadTabs({
   activeThreadId,
   onSelect,
   onThreadCreated,
+  onThreadUpdated,
+  onThreadDeleted,
 }: ThreadTabsProps) {
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+  const [selectedThread, setSelectedThread] = useState<ThreadDTO | null>(null);
 
-  const handleOpenModal = () => {
-    setIsModalOpen(true);
+  const handleOpenCreateModal = () => {
+    setIsCreateModalOpen(true);
   };
 
-  const handleCloseModal = () => {
-    setIsModalOpen(false);
+  const handleCloseCreateModal = () => {
+    setIsCreateModalOpen(false);
   };
 
   const handleThreadCreated = (thread: ThreadDTO) => {
     onThreadCreated(thread);
-    handleCloseModal();
+    handleCloseCreateModal();
+  };
+
+  const handleOpenEditModal = (thread: ThreadDTO, e: React.MouseEvent) => {
+    e.stopPropagation();
+    setSelectedThread(thread);
+    setIsEditModalOpen(true);
+  };
+
+  const handleCloseEditModal = () => {
+    setIsEditModalOpen(false);
+    setSelectedThread(null);
+  };
+
+  const handleThreadUpdated = (thread: ThreadDTO) => {
+    onThreadUpdated(thread);
+    handleCloseEditModal();
+  };
+
+  const handleOpenDeleteDialog = (thread: ThreadDTO, e: React.MouseEvent) => {
+    e.stopPropagation();
+    setSelectedThread(thread);
+    setIsDeleteDialogOpen(true);
+  };
+
+  const handleCloseDeleteDialog = () => {
+    setIsDeleteDialogOpen(false);
+    setSelectedThread(null);
+  };
+
+  const handleThreadDeleted = (threadId: string) => {
+    onThreadDeleted(threadId);
+    handleCloseDeleteDialog();
   };
 
   return (
@@ -46,13 +93,39 @@ export default function ThreadTabs({
         >
           <TabsList className="h-14 bg-transparent border-b-0 justify-start w-full">
             {threads.map((thread) => (
-              <TabsTrigger
-                key={thread.id}
-                value={thread.id}
-                className="data-[state=active]:border-b-2 data-[state=active]:border-primary rounded-none px-4 py-3 text-sm font-medium transition-colors hover:text-primary"
-              >
-                {thread.name}
-              </TabsTrigger>
+              <div key={thread.id} className="relative group">
+                <TabsTrigger
+                  value={thread.id}
+                  className="data-[state=active]:border-b-2 data-[state=active]:border-primary rounded-none px-4 py-3 text-sm font-medium transition-colors hover:text-primary pr-10"
+                >
+                  {thread.name}
+                </TabsTrigger>
+                
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="absolute right-1 top-1/2 -translate-y-1/2 h-7 w-7 opacity-0 group-hover:opacity-100 transition-opacity"
+                      onClick={(e) => e.stopPropagation()}
+                      aria-label={`Opcje dla wątku ${thread.name}`}
+                    >
+                      <span className="text-sm">⋮</span>
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end">
+                    <DropdownMenuItem onClick={(e) => handleOpenEditModal(thread, e)}>
+                      ✏️ Edytuj nazwę
+                    </DropdownMenuItem>
+                    <DropdownMenuItem
+                      onClick={(e) => handleOpenDeleteDialog(thread, e)}
+                      className="text-destructive focus:text-destructive"
+                    >
+                      🗑️ Usuń wątek
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              </div>
             ))}
           </TabsList>
         </Tabs>
@@ -60,7 +133,7 @@ export default function ThreadTabs({
         <Button
           variant="ghost"
           size="icon"
-          onClick={handleOpenModal}
+          onClick={handleOpenCreateModal}
           aria-label="Utwórz nowy wątek"
           className="h-10 w-10 rounded-full hover:bg-primary/10 flex-shrink-0"
         >
@@ -69,9 +142,23 @@ export default function ThreadTabs({
       </div>
 
       <CreateThreadModal
-        isOpen={isModalOpen}
-        onClose={handleCloseModal}
+        isOpen={isCreateModalOpen}
+        onClose={handleCloseCreateModal}
         onThreadCreated={handleThreadCreated}
+      />
+
+      <EditThreadModal
+        isOpen={isEditModalOpen}
+        onClose={handleCloseEditModal}
+        thread={selectedThread}
+        onThreadUpdated={handleThreadUpdated}
+      />
+
+      <DeleteThreadDialog
+        isOpen={isDeleteDialogOpen}
+        onClose={handleCloseDeleteDialog}
+        thread={selectedThread}
+        onThreadDeleted={handleThreadDeleted}
       />
     </div>
   );

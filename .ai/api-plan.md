@@ -18,7 +18,6 @@ All endpoints are prefixed with `/api` and require a valid Supabase auth JWT (Be
 |--------|------|-------------|
 | GET | `/api/threads` | List current user’s threads (not paginated). |
 | POST | `/api/threads` | Create a thread. |
-| GET | `/api/threads/{threadId}` | Get single thread with aggregated counts. |
 | PATCH | `/api/threads/{threadId}` | Rename thread. |
 | DELETE | `/api/threads/{threadId}` | Hard-delete thread and cascade children. |
 
