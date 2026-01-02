@@ -4,6 +4,7 @@ import { Pencil, Trash2, Check, X } from "lucide-react";
 import type { ActionPointDTO } from "@/types";
 import { useActionPointMutations } from "@/components/hooks/useActionPointMutations";
 import { semanticColors } from "@/lib/palette";
+import DeleteActionPointDialog from "@/components/DeleteActionPointDialog";
 
 interface ActionPointsListProps {
   actionPoints: ActionPointDTO[];
@@ -17,7 +18,9 @@ interface ActionPointsListProps {
 export default function ActionPointsList({ actionPoints, onRefetch }: ActionPointsListProps) {
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editTitle, setEditTitle] = useState<string>("");
-  const { updateActionPoint, deleteActionPoint, isUpdating, isDeleting } = useActionPointMutations();
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+  const [actionPointToDelete, setActionPointToDelete] = useState<ActionPointDTO | null>(null);
+  const { updateActionPoint, isUpdating, isDeleting } = useActionPointMutations();
 
   const handleStartEdit = (ap: ActionPointDTO) => {
     setEditingId(ap.id);
@@ -66,23 +69,22 @@ export default function ActionPointsList({ actionPoints, onRefetch }: ActionPoin
     }
   };
 
-  const handleDelete = async (apId: string) => {
-    if (!confirm("Czy na pewno chcesz usunąć ten Action Point? Tej operacji nie można cofnąć.")) {
-      return;
-    }
+  const handleOpenDeleteDialog = (ap: ActionPointDTO) => {
+    setActionPointToDelete(ap);
+    setIsDeleteDialogOpen(true);
+  };
 
-    const success = await deleteActionPoint(apId);
+  const handleCloseDeleteDialog = () => {
+    setIsDeleteDialogOpen(false);
+    setActionPointToDelete(null);
+  };
 
-    if (success) {
-      await onRefetch();
-      toast.success("Usunięto", {
-        description: "Action Point został usunięty.",
-      });
-    } else {
-      toast.error("Błąd", {
-        description: "Nie udało się usunąć Action Point.",
-      });
-    }
+  const handleActionPointDeleted = async () => {
+    await onRefetch();
+    toast.success("Usunięto", {
+      description: "Action Point został usunięty.",
+    });
+    handleCloseDeleteDialog();
   };
 
   if (actionPoints.length === 0) {
@@ -90,10 +92,7 @@ export default function ActionPointsList({ actionPoints, onRefetch }: ActionPoin
       <div className="flex items-center justify-center h-full text-center p-8">
         <div>
           <div className="text-7xl mb-5">📋</div>
-          <h3
-            className="text-lg font-bold mb-2"
-            style={{ color: semanticColors.textPrimary }}
-          >
+          <h3 className="text-lg font-bold mb-2" style={{ color: semanticColors.textPrimary }}>
             Brak Action Points
           </h3>
           <p className="text-sm" style={{ color: semanticColors.textSecondary }}>
@@ -111,9 +110,7 @@ export default function ActionPointsList({ actionPoints, onRefetch }: ActionPoin
           key={ap.id}
           className="flex items-start gap-3 p-4 rounded-xl transition-all duration-200 shadow-sm hover:shadow-md"
           style={{
-            backgroundColor: ap.isCompleted
-              ? semanticColors.backgroundSubtle
-              : semanticColors.backgroundElevated,
+            backgroundColor: ap.isCompleted ? semanticColors.backgroundSubtle : semanticColors.backgroundElevated,
             border: `2px solid ${ap.isCompleted ? semanticColors.border : semanticColors.borderSubtle}`,
           }}
         >
@@ -138,9 +135,7 @@ export default function ActionPointsList({ actionPoints, onRefetch }: ActionPoin
             }}
             aria-label={ap.isCompleted ? "Oznacz jako niewykonane" : "Oznacz jako wykonane"}
           >
-            {ap.isCompleted && (
-              <Check className="w-4 h-4" style={{ color: semanticColors.textOnPrimary }} />
-            )}
+            {ap.isCompleted && <Check className="w-4 h-4" style={{ color: semanticColors.textOnPrimary }} />}
           </button>
 
           {/* Title (editable or display) */}
@@ -157,7 +152,6 @@ export default function ActionPointsList({ actionPoints, onRefetch }: ActionPoin
                   color: semanticColors.textPrimary,
                 }}
                 maxLength={255}
-                autoFocus
                 onKeyDown={(e) => {
                   if (e.key === "Enter") {
                     handleSaveEdit(ap.id);
@@ -247,7 +241,7 @@ export default function ActionPointsList({ actionPoints, onRefetch }: ActionPoin
                   <Pencil className="w-4 h-4" />
                 </button>
                 <button
-                  onClick={() => handleDelete(ap.id)}
+                  onClick={() => handleOpenDeleteDialog(ap)}
                   disabled={isUpdating || isDeleting}
                   className="p-2 rounded-lg transition-all duration-200 disabled:opacity-50"
                   style={{
@@ -271,6 +265,13 @@ export default function ActionPointsList({ actionPoints, onRefetch }: ActionPoin
           </div>
         </div>
       ))}
+
+      <DeleteActionPointDialog
+        isOpen={isDeleteDialogOpen}
+        onClose={handleCloseDeleteDialog}
+        actionPoint={actionPointToDelete}
+        onActionPointDeleted={handleActionPointDeleted}
+      />
     </div>
   );
 }
