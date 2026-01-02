@@ -30,8 +30,6 @@ export default function WelcomePage() {
 
   const handleThreadCreated = async (thread: ThreadDTO) => {
     setIsModalOpen(false);
-    // Redirect to the newly created thread
-    window.location.href = `/threads/${thread.id}`;
   };
 
   // Show loading state
