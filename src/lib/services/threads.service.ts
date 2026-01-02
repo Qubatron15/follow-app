@@ -10,7 +10,7 @@ export class ThreadServiceError extends Error {
   constructor(
     public code: string,
     message: string,
-    public statusCode: number = 500
+    public statusCode = 500
   ) {
     super(message);
     this.name = "ThreadServiceError";
@@ -36,24 +36,60 @@ function mapThreadRowToDTO(row: ThreadRow): ThreadDTO {
  */
 export class ThreadsService {
   /**
+   * Retrieves all threads for the specified user.
+   * Returns threads ordered by creation date (newest first).
+   *
+   * @param supabase - Supabase client instance
+   * @param userId - ID of the user whose threads to retrieve
+   * @returns Promise<ThreadDTO[]> - Array of thread data
+   * @throws ThreadServiceError - For database errors
+   */
+  async getThreadsByUser(supabase: SupabaseClient, userId: string): Promise<ThreadDTO[]> {
+    try {
+      const { data: threads, error } = await supabase
+        .from("threads")
+        .select("*")
+        .eq("user_id", userId)
+        .order("created_at", { ascending: false });
+
+      if (error) {
+        console.error("Error fetching threads:", error);
+        throw new ThreadServiceError(THREAD_ERRORS.INTERNAL_SERVER_ERROR, "Failed to fetch threads", 500);
+      }
+
+      // Map database rows to DTOs
+      return threads.map(mapThreadRowToDTO);
+    } catch (error) {
+      // Re-throw ThreadServiceError instances as-is
+      if (error instanceof ThreadServiceError) {
+        throw error;
+      }
+
+      // Handle unexpected errors
+      console.error("Unexpected error in getThreadsByUser:", error);
+      throw new ThreadServiceError(
+        THREAD_ERRORS.INTERNAL_SERVER_ERROR,
+        "An unexpected error occurred while fetching threads",
+        500
+      );
+    }
+  }
+
+  /**
    * Creates a new thread for the specified user.
-   * 
+   *
    * Business rules:
    * - Thread name must be unique within the user's threads (case-sensitive)
    * - User can have maximum 20 threads
    * - Thread name is already validated by Zod schema
-   * 
+   *
    * @param supabase - Supabase client instance
    * @param userId - ID of the user creating the thread
    * @param name - Name of the thread to create
    * @returns Promise<ThreadDTO> - The created thread data
    * @throws ThreadServiceError - For business rule violations or database errors
    */
-  async createThread(
-    supabase: SupabaseClient,
-    userId: string,
-    name: string
-  ): Promise<ThreadDTO> {
+  async createThread(supabase: SupabaseClient, userId: string, name: string): Promise<ThreadDTO> {
     try {
       // Step 1: Check for duplicate thread name within user's threads
       const { data: existingThread, error: duplicateError } = await supabase
@@ -88,19 +124,11 @@ export class ThreadsService {
 
       if (countError) {
         console.error("Error counting user threads:", countError);
-        throw new ThreadServiceError(
-          THREAD_ERRORS.INTERNAL_SERVER_ERROR,
-          "Failed to check thread count",
-          500
-        );
+        throw new ThreadServiceError(THREAD_ERRORS.INTERNAL_SERVER_ERROR, "Failed to check thread count", 500);
       }
 
       if (threadCount !== null && threadCount >= 20) {
-        throw new ThreadServiceError(
-          THREAD_ERRORS.THREAD_LIMIT_REACHED,
-          "Maximum number of threads (20) reached",
-          429
-        );
+        throw new ThreadServiceError(THREAD_ERRORS.THREAD_LIMIT_REACHED, "Maximum number of threads (20) reached", 429);
       }
 
       // Step 3: Create the new thread
@@ -115,7 +143,7 @@ export class ThreadsService {
 
       if (insertError) {
         console.error("Error creating thread:", insertError);
-        
+
         // Handle specific database constraint violations
         if (insertError.code === "23505") {
           // Unique constraint violation - race condition with duplicate check
@@ -126,11 +154,7 @@ export class ThreadsService {
           );
         }
 
-        throw new ThreadServiceError(
-          THREAD_ERRORS.INTERNAL_SERVER_ERROR,
-          "Failed to create thread",
-          500
-        );
+        throw new ThreadServiceError(THREAD_ERRORS.INTERNAL_SERVER_ERROR, "Failed to create thread", 500);
       }
 
       if (!newThread) {
@@ -143,7 +167,6 @@ export class ThreadsService {
 
       // Step 4: Return the created thread as DTO
       return mapThreadRowToDTO(newThread);
-
     } catch (error) {
       // Re-throw ThreadServiceError instances as-is
       if (error instanceof ThreadServiceError) {
