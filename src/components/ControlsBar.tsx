@@ -1,4 +1,4 @@
-import { Button } from "@/components/ui/button";
+import { semanticColors } from "@/lib/palette";
 
 interface ControlsBarProps {
   disabled: boolean;
@@ -18,36 +18,79 @@ export default function ControlsBar({
   isDirty,
 }: ControlsBarProps) {
   return (
-    <div className="border-t bg-muted/30 px-4 md:px-6 py-4 sticky bottom-0 shadow-lg">
+    <div
+      className="px-6 md:px-8 py-5 sticky bottom-0 shadow-2xl"
+      style={{
+        backgroundColor: semanticColors.backgroundElevated,
+        borderTop: `2px solid ${semanticColors.border}`,
+      }}
+    >
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 max-w-7xl mx-auto">
-        <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-4">
-          <div className="text-sm text-muted-foreground">
-            <span className="font-medium">Status:</span>{" "}
+        <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-6">
+          <div
+            className="text-sm px-4 py-2 rounded-lg font-medium"
+            style={{
+              backgroundColor: semanticColors.backgroundSubtle,
+              color: semanticColors.textPrimary,
+            }}
+          >
+            <span className="font-semibold">Status:</span>{" "}
             {isDirty ? (
-              <span className="text-orange-500 font-medium">Niezapisane zmiany</span>
+              <span
+                className="font-bold"
+                style={{ color: "#f59e0b" }}
+              >
+                Niezapisane zmiany
+              </span>
             ) : transcriptLength > 0 ? (
-              <span className="text-green-600 font-medium">Zapisano</span>
+              <span
+                className="font-bold"
+                style={{ color: semanticColors.success }}
+              >
+                Zapisano
+              </span>
             ) : (
-              <span>Brak transkrypcji</span>
+              <span style={{ color: semanticColors.textMuted }}>Brak transkrypcji</span>
             )}
           </div>
 
           {transcriptLength > 0 && (
-            <div className="text-sm text-muted-foreground">
-              <span className="font-medium">Długość:</span>{" "}
-              {transcriptLength.toLocaleString("pl-PL")} znaków
+            <div
+              className="text-sm px-4 py-2 rounded-lg font-medium"
+              style={{
+                backgroundColor: semanticColors.backgroundSubtle,
+                color: semanticColors.textPrimary,
+              }}
+            >
+              <span className="font-semibold">Długość:</span>{" "}
+              <span className="font-bold">{transcriptLength.toLocaleString("pl-PL")}</span> znaków
             </div>
           )}
         </div>
 
-        <Button
+        <button
           onClick={onGenerate}
           disabled={disabled}
-          size="lg"
-          className="w-full sm:w-auto sm:min-w-[200px]"
+          className="w-full sm:w-auto sm:min-w-[240px] px-6 py-3.5 rounded-lg font-bold text-base transition-all duration-200 shadow-md hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
+          style={{
+            backgroundColor: disabled ? semanticColors.border : semanticColors.primary,
+            color: semanticColors.textOnPrimary,
+          }}
+          onMouseEnter={(e) => {
+            if (!disabled) {
+              e.currentTarget.style.backgroundColor = semanticColors.primaryHover;
+              e.currentTarget.style.transform = "translateY(-2px)";
+            }
+          }}
+          onMouseLeave={(e) => {
+            if (!disabled) {
+              e.currentTarget.style.backgroundColor = semanticColors.primary;
+              e.currentTarget.style.transform = "translateY(0)";
+            }
+          }}
         >
           Generuj Action Points
-        </Button>
+        </button>
       </div>
     </div>
   );

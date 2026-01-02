@@ -12,6 +12,7 @@ import ControlsBar from "@/components/ControlsBar";
 import SpinnerOverlay from "@/components/SpinnerOverlay";
 import ActionPointsList from "@/components/ActionPointsList";
 import AddActionPointModal from "@/components/AddActionPointModal";
+import { semanticColors } from "@/lib/palette";
 import type { ThreadDTO } from "@/types";
 
 /**
@@ -33,7 +34,7 @@ function DashboardThreadsContent() {
   } = useThreadsContext();
 
   const { data: fetchedThreads, isLoading: isFetching, error: fetchError, refetch } = useThreads();
-  const { transcripts, isLoading: isLoadingTranscripts, refetch: refetchTranscripts } = useTranscripts(activeThreadId);
+  const { transcripts, refetch: refetchTranscripts } = useTranscripts(activeThreadId);
   const { saveTranscript, isSaving } = useSaveTranscript();
   const { actionPoints, refetch: refetchActionPoints } = useActionPoints(activeThreadId);
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
@@ -154,10 +155,24 @@ function DashboardThreadsContent() {
 
   if (isLoading) {
     return (
-      <main className="flex items-center justify-center min-h-screen">
+      <main
+        className="flex items-center justify-center min-h-screen"
+        style={{ backgroundColor: semanticColors.background }}
+      >
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
-          <p className="text-muted-foreground">Ładowanie wątków...</p>
+          <div
+            className="animate-spin rounded-full h-16 w-16 mx-auto mb-6"
+            style={{
+              border: `3px solid ${semanticColors.borderSubtle}`,
+              borderTopColor: semanticColors.primary,
+            }}
+          ></div>
+          <p
+            className="text-lg font-medium"
+            style={{ color: semanticColors.textSecondary }}
+          >
+            Ładowanie wątków...
+          </p>
         </div>
       </main>
     );
@@ -165,14 +180,40 @@ function DashboardThreadsContent() {
 
   if (error) {
     return (
-      <main className="flex items-center justify-center min-h-screen">
-        <div className="text-center max-w-md">
-          <div className="text-destructive text-5xl mb-4">⚠️</div>
-          <h2 className="text-2xl font-semibold mb-2">Wystąpił błąd</h2>
-          <p className="text-muted-foreground mb-4">{error}</p>
+      <main
+        className="flex items-center justify-center min-h-screen"
+        style={{ backgroundColor: semanticColors.background }}
+      >
+        <div
+          className="text-center max-w-md p-8 rounded-2xl shadow-lg"
+          style={{ backgroundColor: semanticColors.backgroundElevated }}
+        >
+          <div className="text-6xl mb-6">⚠️</div>
+          <h2
+            className="text-2xl font-bold mb-3"
+            style={{ color: semanticColors.textPrimary }}
+          >
+            Wystąpił błąd
+          </h2>
+          <p
+            className="text-base mb-6 leading-relaxed"
+            style={{ color: semanticColors.textSecondary }}
+          >
+            {error}
+          </p>
           <button
             onClick={() => window.location.reload()}
-            className="px-4 py-2 bg-primary text-primary-foreground rounded-md hover:bg-primary/90"
+            className="px-6 py-3 rounded-lg font-medium transition-all duration-200 hover:shadow-md"
+            style={{
+              backgroundColor: semanticColors.primary,
+              color: semanticColors.textOnPrimary,
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.backgroundColor = semanticColors.primaryHover;
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.backgroundColor = semanticColors.primary;
+            }}
           >
             Odśwież stronę
           </button>
@@ -187,7 +228,11 @@ function DashboardThreadsContent() {
     transcriptDraft.content.length > 30000;
 
   return (
-    <main className="flex flex-col h-screen" role="main">
+    <main
+      className="flex flex-col h-screen"
+      role="main"
+      style={{ backgroundColor: semanticColors.background }}
+    >
       <ThreadTabs
         threads={threads}
         activeThreadId={activeThreadId}
@@ -199,19 +244,47 @@ function DashboardThreadsContent() {
 
       {threads.length === 0 ? (
         <div className="flex-1 flex items-center justify-center p-4 md:p-8">
-          <div className="text-center text-muted-foreground max-w-md">
-            <div className="text-6xl mb-4">📝</div>
-            <h2 className="text-xl font-semibold mb-2 text-foreground">Brak wątków</h2>
-            <p className="text-base mb-4">Utwórz swój pierwszy wątek, aby rozpocząć zarządzanie transkrypcjami i action points.</p>
-            <p className="text-sm">Kliknij przycisk <span className="font-semibold">+</span> powyżej, aby utworzyć nowy wątek.</p>
+          <div
+            className="text-center max-w-lg p-12 rounded-2xl shadow-sm"
+            style={{ backgroundColor: semanticColors.backgroundElevated }}
+          >
+            <div className="text-7xl mb-6">📝</div>
+            <h2
+              className="text-2xl font-bold mb-4"
+              style={{ color: semanticColors.textPrimary }}
+            >
+              Brak wątków
+            </h2>
+            <p
+              className="text-base mb-3 leading-relaxed"
+              style={{ color: semanticColors.textSecondary }}
+            >
+              Utwórz swój pierwszy wątek, aby rozpocząć zarządzanie transkrypcjami i action
+              points.
+            </p>
+            <p className="text-sm" style={{ color: semanticColors.textMuted }}>
+              Kliknij przycisk <span className="font-semibold">+</span> powyżej, aby utworzyć
+              nowy wątek.
+            </p>
           </div>
         </div>
       ) : activeThreadId ? (
         <>
           {/* Split view: Transcript (left) and Action Points (right) */}
-          <div className="flex-1 overflow-hidden flex flex-col md:flex-row gap-4 p-4 md:p-6">
+          <div className="flex-1 overflow-hidden flex flex-col lg:flex-row gap-6 p-6 md:p-8">
             {/* Left side: Transcript */}
             <div className="flex-1 flex flex-col overflow-hidden">
+              <div
+                className="mb-3 pb-2"
+                style={{ borderBottom: `2px solid ${semanticColors.primary}` }}
+              >
+                <h2
+                  className="text-xl font-bold"
+                  style={{ color: semanticColors.textPrimary }}
+                >
+                  Transkrypcja
+                </h2>
+              </div>
               <div className="flex-1 overflow-hidden">
                 <TextareaTranscript
                   value={transcriptDraft.content}
@@ -222,13 +295,40 @@ function DashboardThreadsContent() {
             </div>
 
             {/* Right side: Action Points */}
-            <div className="flex-1 flex flex-col overflow-hidden border rounded-lg bg-background">
+            <div
+              className="flex-1 flex flex-col overflow-hidden rounded-2xl shadow-lg"
+              style={{
+                backgroundColor: semanticColors.backgroundElevated,
+                border: `1px solid ${semanticColors.borderSubtle}`,
+              }}
+            >
               {/* Header */}
-              <div className="flex items-center justify-between p-4 border-b">
-                <h2 className="text-lg font-semibold">Action Points</h2>
+              <div
+                className="flex items-center justify-between p-5"
+                style={{
+                  borderBottom: `1px solid ${semanticColors.border}`,
+                  backgroundColor: semanticColors.backgroundSubtle,
+                }}
+              >
+                <h2
+                  className="text-xl font-bold"
+                  style={{ color: semanticColors.textPrimary }}
+                >
+                  Action Points
+                </h2>
                 <button
                   onClick={() => setIsAddModalOpen(true)}
-                  className="flex items-center gap-2 px-3 py-1.5 text-sm bg-primary text-primary-foreground rounded-md hover:bg-primary/90 transition-colors"
+                  className="flex items-center gap-2 px-4 py-2.5 text-sm font-medium rounded-lg transition-all duration-200 hover:shadow-md"
+                  style={{
+                    backgroundColor: semanticColors.primary,
+                    color: semanticColors.textOnPrimary,
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.backgroundColor = semanticColors.primaryHover;
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.backgroundColor = semanticColors.primary;
+                  }}
                 >
                   <Plus className="w-4 h-4" />
                   Dodaj AP
@@ -236,7 +336,7 @@ function DashboardThreadsContent() {
               </div>
 
               {/* Action Points List */}
-              <div className="flex-1 overflow-y-auto p-4">
+              <div className="flex-1 overflow-y-auto p-5">
                 <ActionPointsList actionPoints={actionPoints} onRefetch={refetchActionPoints} />
               </div>
             </div>
@@ -261,10 +361,23 @@ function DashboardThreadsContent() {
         </>
       ) : (
         <div className="flex-1 flex items-center justify-center p-4 md:p-8">
-          <div className="text-center text-muted-foreground max-w-md">
-            <div className="text-6xl mb-4">👆</div>
-            <h2 className="text-xl font-semibold mb-2 text-foreground">Wybierz wątek</h2>
-            <p className="text-base">Wybierz jeden z wątków z zakładek powyżej, aby rozpocząć pracę z transkrypcją.</p>
+          <div
+            className="text-center max-w-lg p-12 rounded-2xl shadow-sm"
+            style={{ backgroundColor: semanticColors.backgroundElevated }}
+          >
+            <div className="text-7xl mb-6">👆</div>
+            <h2
+              className="text-2xl font-bold mb-4"
+              style={{ color: semanticColors.textPrimary }}
+            >
+              Wybierz wątek
+            </h2>
+            <p
+              className="text-base leading-relaxed"
+              style={{ color: semanticColors.textSecondary }}
+            >
+              Wybierz jeden z wątków z zakładek powyżej, aby rozpocząć pracę z transkrypcją.
+            </p>
           </div>
         </div>
       )}

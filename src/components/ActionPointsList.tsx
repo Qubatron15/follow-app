@@ -3,6 +3,7 @@ import { toast } from "sonner";
 import { Pencil, Trash2, Check, X } from "lucide-react";
 import type { ActionPointDTO } from "@/types";
 import { useActionPointMutations } from "@/components/hooks/useActionPointMutations";
+import { semanticColors } from "@/lib/palette";
 
 interface ActionPointsListProps {
   actionPoints: ActionPointDTO[];
@@ -86,39 +87,60 @@ export default function ActionPointsList({ actionPoints, onRefetch }: ActionPoin
 
   if (actionPoints.length === 0) {
     return (
-      <div className="flex items-center justify-center h-full text-center text-muted-foreground p-8">
+      <div className="flex items-center justify-center h-full text-center p-8">
         <div>
-          <div className="text-6xl mb-4">📋</div>
-          <h3 className="text-lg font-semibold mb-2 text-foreground">Brak Action Points</h3>
-          <p className="text-sm">Dodaj pierwszy Action Point, aby rozpocząć śledzenie zadań.</p>
+          <div className="text-7xl mb-5">📋</div>
+          <h3
+            className="text-lg font-bold mb-2"
+            style={{ color: semanticColors.textPrimary }}
+          >
+            Brak Action Points
+          </h3>
+          <p className="text-sm" style={{ color: semanticColors.textSecondary }}>
+            Dodaj pierwszy Action Point, aby rozpocząć śledzenie zadań.
+          </p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="space-y-2">
+    <div className="space-y-3">
       {actionPoints.map((ap) => (
         <div
           key={ap.id}
-          className={`
-            flex items-start gap-3 p-4 rounded-lg border transition-colors
-            ${ap.isCompleted ? "bg-muted/50 border-muted" : "bg-background border-border"}
-          `}
+          className="flex items-start gap-3 p-4 rounded-xl transition-all duration-200 shadow-sm hover:shadow-md"
+          style={{
+            backgroundColor: ap.isCompleted
+              ? semanticColors.backgroundSubtle
+              : semanticColors.backgroundElevated,
+            border: `2px solid ${ap.isCompleted ? semanticColors.border : semanticColors.borderSubtle}`,
+          }}
         >
           {/* Checkbox for completion status */}
           <button
             onClick={() => handleToggleCompleted(ap)}
             disabled={isUpdating || isDeleting}
-            className={`
-              mt-0.5 flex-shrink-0 w-5 h-5 rounded border-2 transition-all
-              ${ap.isCompleted ? "bg-primary border-primary" : "border-muted-foreground hover:border-primary"}
-              disabled:opacity-50 disabled:cursor-not-allowed
-              flex items-center justify-center
-            `}
+            className="mt-0.5 flex-shrink-0 w-6 h-6 rounded-md transition-all duration-200 flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed"
+            style={{
+              backgroundColor: ap.isCompleted ? semanticColors.primary : "transparent",
+              border: `2px solid ${ap.isCompleted ? semanticColors.primary : semanticColors.textMuted}`,
+            }}
+            onMouseEnter={(e) => {
+              if (!ap.isCompleted && !isUpdating && !isDeleting) {
+                e.currentTarget.style.borderColor = semanticColors.primary;
+              }
+            }}
+            onMouseLeave={(e) => {
+              if (!ap.isCompleted) {
+                e.currentTarget.style.borderColor = semanticColors.textMuted;
+              }
+            }}
             aria-label={ap.isCompleted ? "Oznacz jako niewykonane" : "Oznacz jako wykonane"}
           >
-            {ap.isCompleted && <Check className="w-3 h-3 text-primary-foreground" />}
+            {ap.isCompleted && (
+              <Check className="w-4 h-4" style={{ color: semanticColors.textOnPrimary }} />
+            )}
           </button>
 
           {/* Title (editable or display) */}
@@ -128,7 +150,12 @@ export default function ActionPointsList({ actionPoints, onRefetch }: ActionPoin
                 type="text"
                 value={editTitle}
                 onChange={(e) => setEditTitle(e.target.value)}
-                className="w-full px-2 py-1 border rounded focus:outline-none focus:ring-2 focus:ring-primary"
+                className="w-full px-3 py-2 rounded-lg focus:outline-none transition-all"
+                style={{
+                  border: `2px solid ${semanticColors.primary}`,
+                  backgroundColor: semanticColors.backgroundElevated,
+                  color: semanticColors.textPrimary,
+                }}
                 maxLength={255}
                 autoFocus
                 onKeyDown={(e) => {
@@ -141,10 +168,11 @@ export default function ActionPointsList({ actionPoints, onRefetch }: ActionPoin
               />
             ) : (
               <p
-                className={`
-                  text-sm break-words
-                  ${ap.isCompleted ? "line-through text-muted-foreground" : "text-foreground"}
-                `}
+                className="text-sm break-words leading-relaxed"
+                style={{
+                  color: ap.isCompleted ? semanticColors.textMuted : semanticColors.textPrimary,
+                  textDecoration: ap.isCompleted ? "line-through" : "none",
+                }}
               >
                 {ap.title}
               </p>
@@ -158,7 +186,19 @@ export default function ActionPointsList({ actionPoints, onRefetch }: ActionPoin
                 <button
                   onClick={() => handleSaveEdit(ap.id)}
                   disabled={isUpdating}
-                  className="p-1.5 text-green-600 hover:bg-green-50 rounded transition-colors disabled:opacity-50"
+                  className="p-2 rounded-lg transition-all duration-200 disabled:opacity-50"
+                  style={{
+                    color: semanticColors.success,
+                    backgroundColor: "#f0fdf4",
+                  }}
+                  onMouseEnter={(e) => {
+                    if (!isUpdating) {
+                      e.currentTarget.style.backgroundColor = "#dcfce7";
+                    }
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.backgroundColor = "#f0fdf4";
+                  }}
                   aria-label="Zapisz"
                 >
                   <Check className="w-4 h-4" />
@@ -166,7 +206,19 @@ export default function ActionPointsList({ actionPoints, onRefetch }: ActionPoin
                 <button
                   onClick={handleCancelEdit}
                   disabled={isUpdating}
-                  className="p-1.5 text-muted-foreground hover:bg-muted rounded transition-colors disabled:opacity-50"
+                  className="p-2 rounded-lg transition-all duration-200 disabled:opacity-50"
+                  style={{
+                    color: semanticColors.textSecondary,
+                    backgroundColor: semanticColors.backgroundSubtle,
+                  }}
+                  onMouseEnter={(e) => {
+                    if (!isUpdating) {
+                      e.currentTarget.style.backgroundColor = semanticColors.border;
+                    }
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.backgroundColor = semanticColors.backgroundSubtle;
+                  }}
                   aria-label="Anuluj"
                 >
                   <X className="w-4 h-4" />
@@ -177,7 +229,19 @@ export default function ActionPointsList({ actionPoints, onRefetch }: ActionPoin
                 <button
                   onClick={() => handleStartEdit(ap)}
                   disabled={isUpdating || isDeleting}
-                  className="p-1.5 text-blue-600 hover:bg-blue-50 rounded transition-colors disabled:opacity-50"
+                  className="p-2 rounded-lg transition-all duration-200 disabled:opacity-50"
+                  style={{
+                    color: semanticColors.accent,
+                    backgroundColor: "#fef3e7",
+                  }}
+                  onMouseEnter={(e) => {
+                    if (!isUpdating && !isDeleting) {
+                      e.currentTarget.style.backgroundColor = "#fde8cc";
+                    }
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.backgroundColor = "#fef3e7";
+                  }}
                   aria-label="Edytuj"
                 >
                   <Pencil className="w-4 h-4" />
@@ -185,7 +249,19 @@ export default function ActionPointsList({ actionPoints, onRefetch }: ActionPoin
                 <button
                   onClick={() => handleDelete(ap.id)}
                   disabled={isUpdating || isDeleting}
-                  className="p-1.5 text-red-600 hover:bg-red-50 rounded transition-colors disabled:opacity-50"
+                  className="p-2 rounded-lg transition-all duration-200 disabled:opacity-50"
+                  style={{
+                    color: semanticColors.error,
+                    backgroundColor: "#fef2f2",
+                  }}
+                  onMouseEnter={(e) => {
+                    if (!isUpdating && !isDeleting) {
+                      e.currentTarget.style.backgroundColor = "#fee2e2";
+                    }
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.backgroundColor = "#fef2f2";
+                  }}
                   aria-label="Usuń"
                 >
                   <Trash2 className="w-4 h-4" />

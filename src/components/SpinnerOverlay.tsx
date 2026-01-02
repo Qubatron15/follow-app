@@ -1,5 +1,6 @@
 import { createPortal } from "react-dom";
 import { useEffect, useState } from "react";
+import { semanticColors } from "@/lib/palette";
 
 interface SpinnerOverlayProps {
   visible: boolean;
@@ -27,14 +28,29 @@ export default function SpinnerOverlay({
 
   return createPortal(
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-background/80 backdrop-blur-sm"
+      className="fixed inset-0 z-50 flex items-center justify-center backdrop-blur-md"
+      style={{ backgroundColor: "rgba(34, 56, 67, 0.85)" }}
       role="dialog"
       aria-modal="true"
       aria-label={label}
     >
-      <div className="flex flex-col items-center gap-4">
-        <div className="animate-spin rounded-full h-16 w-16 border-b-4 border-primary"></div>
-        <p className="text-lg font-medium text-foreground">{label}</p>
+      <div
+        className="flex flex-col items-center gap-5 p-8 rounded-2xl shadow-2xl"
+        style={{ backgroundColor: semanticColors.backgroundElevated }}
+      >
+        <div
+          className="animate-spin rounded-full h-20 w-20"
+          style={{
+            border: `4px solid ${semanticColors.borderSubtle}`,
+            borderTopColor: semanticColors.primary,
+          }}
+        ></div>
+        <p
+          className="text-lg font-bold"
+          style={{ color: semanticColors.textPrimary }}
+        >
+          {label}
+        </p>
       </div>
     </div>,
     document.body
