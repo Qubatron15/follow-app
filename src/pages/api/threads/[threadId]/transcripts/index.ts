@@ -1,7 +1,7 @@
 import type { APIContext } from "astro";
 import { createTranscriptSchema, uuidSchema } from "../../../../../lib/schemas/transcripts.schema";
 import { transcriptsService, TranscriptServiceError } from "../../../../../lib/services/transcripts.service";
-import { actionPointsService } from "../../../../../lib/services/action-points.service";
+import { aiService } from "../../../../../lib/services/ai.service";
 import {
   mapServiceErrorToHttpResponse,
   createValidationErrorResponse,
@@ -71,7 +71,7 @@ export async function GET(context: APIContext): Promise<Response> {
 
 /**
  * Creates a new transcript for a specific thread.
- * Additionally creates three default action points: "jajka", "mleko", "mąka".
+ * Uses OpenAI to analyze the transcript and generate relevant action points.
  *
  * POST /api/threads/{threadId}/transcripts
  *
@@ -81,13 +81,13 @@ export async function GET(context: APIContext): Promise<Response> {
  * }
  *
  * Responses:
- * - 201: Transcript created successfully (action points created in background)
+ * - 201: Transcript created successfully (action points generated via AI)
  * - 400: Invalid input data or threadId
  * - 401: Authentication required
  * - 404: Thread not found or doesn't belong to user
  * - 500: Internal server error
  *
- * Note: If action points creation fails, the transcript is still created successfully.
+ * Note: If action points generation fails, the transcript is still created successfully.
  */
 export async function POST(context: APIContext): Promise<Response> {
   try {
@@ -130,19 +130,17 @@ export async function POST(context: APIContext): Promise<Response> {
       validationResult.data.content
     );
 
-    // Step 6: Create default action points for the thread
+    // Step 6: Generate action points using AI based on transcript content
     const userId = "24a19ed0-7584-4377-a10f-326c63d9f927";
-    const defaultActionPoints = ["jajka", "mleko", "mąka"];
 
     try {
-      await Promise.all(
-        defaultActionPoints.map((title) =>
-          actionPointsService.create(supabase, userId, threadId, title, false)
-        )
+      await aiService.generateActionPointsFromTranscript(supabase, userId, threadId, validationResult.data.content);
+    } catch (aiError) {
+      // AI generation failed - return error to frontend
+      console.error("AI action points generation failed:", aiError);
+      return createInternalServerErrorResponse(
+        aiError instanceof Error ? aiError.message : "Failed to generate action points using AI"
       );
-    } catch (apError) {
-      // Log error but don't fail the request - transcript was already created
-      console.error("Failed to create default action points:", apError);
     }
 
     // Step 7: Return successful response
@@ -157,12 +155,12 @@ export async function POST(context: APIContext): Promise<Response> {
       },
     });
   } catch (error) {
-    // Step 7: Handle service errors
+    // Step 8: Handle service errors
     if (error instanceof TranscriptServiceError) {
       return mapServiceErrorToHttpResponse(error);
     }
 
-    // Step 8: Handle unexpected errors
+    // Step 9: Handle unexpected errors
     console.error("Unexpected error in POST /api/threads/{threadId}/transcripts:", error);
     return createInternalServerErrorResponse("An unexpected error occurred while creating the transcript");
   }
