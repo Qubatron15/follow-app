@@ -1,8 +1,10 @@
 import type { ErrorResponse } from "../../types";
 import { ThreadServiceError } from "../services/threads.service";
 import { TranscriptServiceError } from "../services/transcripts.service";
+import { ActionPointServiceError } from "../services/action-points.service";
 import { THREAD_ERRORS } from "../schemas/threads.schema";
 import { TRANSCRIPT_ERRORS } from "../schemas/transcripts.schema";
+import { ACTION_POINT_ERRORS } from "../schemas/action-points.schema";
 
 /**
  * Maps service errors to HTTP status codes.
@@ -20,6 +22,12 @@ const ERROR_STATUS_MAP: Record<string, number> = {
   [TRANSCRIPT_ERRORS.VALIDATION_ERROR]: 400,
   [TRANSCRIPT_ERRORS.AUTH_REQUIRED]: 401,
   [TRANSCRIPT_ERRORS.INTERNAL_SERVER_ERROR]: 500,
+  [ACTION_POINT_ERRORS.ACTION_POINT_TITLE_INVALID]: 400,
+  [ACTION_POINT_ERRORS.ACTION_POINT_NOT_FOUND]: 404,
+  [ACTION_POINT_ERRORS.THREAD_NOT_FOUND]: 404,
+  [ACTION_POINT_ERRORS.VALIDATION_ERROR]: 400,
+  [ACTION_POINT_ERRORS.AUTH_REQUIRED]: 401,
+  [ACTION_POINT_ERRORS.INTERNAL_SERVER_ERROR]: 500,
 } as const;
 
 /**
@@ -39,15 +47,15 @@ export function createErrorResponse(code: string, message: string): ErrorRespons
 }
 
 /**
- * Maps ThreadServiceError or TranscriptServiceError to HTTP Response with appropriate status code.
+ * Maps ThreadServiceError, TranscriptServiceError, or ActionPointServiceError to HTTP Response with appropriate status code.
  * Provides consistent error response format and logging.
  *
- * @param error - ThreadServiceError or TranscriptServiceError instance
+ * @param error - ThreadServiceError, TranscriptServiceError, or ActionPointServiceError instance
  * @param requestId - Optional request ID for logging correlation
  * @returns HTTP Response with error details
  */
 export function mapServiceErrorToHttpResponse(
-  error: ThreadServiceError | TranscriptServiceError,
+  error: ThreadServiceError | TranscriptServiceError | ActionPointServiceError,
   requestId?: string
 ): Response {
   // Log error with request correlation if available
