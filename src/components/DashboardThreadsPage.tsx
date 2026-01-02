@@ -1,13 +1,17 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { toast } from "sonner";
+import { Plus } from "lucide-react";
 import { ThreadsProvider, useThreadsContext } from "@/components/hooks/useThreadsContext";
 import { useThreads } from "@/components/hooks/useThreads";
 import { useTranscripts } from "@/components/hooks/useTranscripts";
 import { useSaveTranscript } from "@/components/hooks/useSaveTranscript";
+import { useActionPoints } from "@/components/hooks/useActionPoints";
 import ThreadTabs from "@/components/ThreadTabs";
 import TextareaTranscript from "@/components/TextareaTranscript";
 import ControlsBar from "@/components/ControlsBar";
 import SpinnerOverlay from "@/components/SpinnerOverlay";
+import ActionPointsList from "@/components/ActionPointsList";
+import AddActionPointModal from "@/components/AddActionPointModal";
 import type { ThreadDTO } from "@/types";
 
 /**
@@ -31,6 +35,8 @@ function DashboardThreadsContent() {
   const { data: fetchedThreads, isLoading: isFetching, error: fetchError, refetch } = useThreads();
   const { transcripts, isLoading: isLoadingTranscripts, refetch: refetchTranscripts } = useTranscripts(activeThreadId);
   const { saveTranscript, isSaving } = useSaveTranscript();
+  const { actionPoints, refetch: refetchActionPoints } = useActionPoints(activeThreadId);
+  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
 
   // Update context when threads are fetched
   useEffect(() => {
@@ -199,13 +205,37 @@ function DashboardThreadsContent() {
         </div>
       ) : activeThreadId ? (
         <>
-          <div className="flex-1 overflow-hidden p-4 md:p-6">
-            <div className="h-full max-w-7xl mx-auto">
-              <TextareaTranscript
-                value={transcriptDraft.content}
-                onChange={handleTranscriptChange}
-                maxLength={30000}
-              />
+          {/* Split view: Transcript (left) and Action Points (right) */}
+          <div className="flex-1 overflow-hidden flex flex-col md:flex-row gap-4 p-4 md:p-6">
+            {/* Left side: Transcript */}
+            <div className="flex-1 flex flex-col overflow-hidden">
+              <div className="flex-1 overflow-hidden">
+                <TextareaTranscript
+                  value={transcriptDraft.content}
+                  onChange={handleTranscriptChange}
+                  maxLength={30000}
+                />
+              </div>
+            </div>
+
+            {/* Right side: Action Points */}
+            <div className="flex-1 flex flex-col overflow-hidden border rounded-lg bg-background">
+              {/* Header */}
+              <div className="flex items-center justify-between p-4 border-b">
+                <h2 className="text-lg font-semibold">Action Points</h2>
+                <button
+                  onClick={() => setIsAddModalOpen(true)}
+                  className="flex items-center gap-2 px-3 py-1.5 text-sm bg-primary text-primary-foreground rounded-md hover:bg-primary/90 transition-colors"
+                >
+                  <Plus className="w-4 h-4" />
+                  Dodaj AP
+                </button>
+              </div>
+
+              {/* Action Points List */}
+              <div className="flex-1 overflow-y-auto p-4">
+                <ActionPointsList actionPoints={actionPoints} onRefetch={refetchActionPoints} />
+              </div>
             </div>
           </div>
 
@@ -215,6 +245,16 @@ function DashboardThreadsContent() {
             transcriptLength={transcriptDraft.content.length}
             isDirty={transcriptDraft.isDirty}
           />
+
+          {/* Add Action Point Modal */}
+          {activeThreadId && (
+            <AddActionPointModal
+              threadId={activeThreadId}
+              isOpen={isAddModalOpen}
+              onClose={() => setIsAddModalOpen(false)}
+              onSuccess={refetchActionPoints}
+            />
+          )}
         </>
       ) : (
         <div className="flex-1 flex items-center justify-center p-4 md:p-8">
