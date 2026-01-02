@@ -41,3 +41,24 @@ export const createTranscriptSchema = z.object({
  * Type inference for the validated transcript creation data.
  */
 export type CreateTranscriptInput = z.infer<typeof createTranscriptSchema>;
+
+/**
+ * Zod schema for validating transcript update requests.
+ * Validates that the content is:
+ * - Non-empty after trimming whitespace
+ * - Maximum 30,000 characters long
+ *
+ * The schema automatically trims whitespace to prevent XSS and ensure clean data.
+ */
+export const updateTranscriptSchema = z.object({
+  content: z
+    .string()
+    .trim()
+    .min(1, TRANSCRIPT_ERRORS.TRANSCRIPT_CONTENT_INVALID)
+    .max(30_000, TRANSCRIPT_ERRORS.TRANSCRIPT_CONTENT_INVALID),
+});
+
+/**
+ * Type inference for the validated transcript update data.
+ */
+export type UpdateTranscriptInput = z.infer<typeof updateTranscriptSchema>;

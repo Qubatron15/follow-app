@@ -263,6 +263,101 @@ export class TranscriptsService {
   }
 
   /**
+   * Updates an existing transcript's content.
+   * Verifies that the transcript belongs to a thread owned by the user.
+   *
+   * @param supabase - Supabase client instance
+   * @param userId - ID of the user updating the transcript
+   * @param transcriptId - ID of the transcript to update
+   * @param content - New content for the transcript
+   * @returns Promise<TranscriptDTO> - The updated transcript data
+   * @throws TranscriptServiceError - For ownership violations or database errors
+   */
+  async update(
+    supabase: SupabaseClient,
+    userId: string,
+    transcriptId: string,
+    content: string
+  ): Promise<TranscriptDTO> {
+    try {
+      // Step 1: Verify transcript exists and belongs to user's thread
+      const { data: transcript, error: fetchError } = await supabase
+        .from("transcripts")
+        .select("id, threads!inner(user_id)")
+        .eq("id", transcriptId)
+        .maybeSingle();
+
+      if (fetchError) {
+        console.error("Error verifying transcript ownership:", fetchError);
+        throw new TranscriptServiceError(
+          TRANSCRIPT_ERRORS.INTERNAL_SERVER_ERROR,
+          "Failed to verify transcript ownership",
+          500
+        );
+      }
+
+      if (!transcript) {
+        throw new TranscriptServiceError(
+          TRANSCRIPT_ERRORS.TRANSCRIPT_NOT_FOUND,
+          `Transcript with id "${transcriptId}" not found`,
+          404
+        );
+      }
+
+      // Step 2: Verify thread ownership (BOLA protection)
+      const threadUserId = (transcript.threads as any).user_id;
+      if (threadUserId !== userId) {
+        throw new TranscriptServiceError(
+          TRANSCRIPT_ERRORS.TRANSCRIPT_NOT_FOUND,
+          `Transcript with id "${transcriptId}" not found`,
+          404
+        );
+      }
+
+      // Step 3: Update the transcript
+      const { data: updatedTranscript, error: updateError } = await supabase
+        .from("transcripts")
+        .update({ content })
+        .eq("id", transcriptId)
+        .select()
+        .single();
+
+      if (updateError) {
+        console.error("Error updating transcript:", updateError);
+        throw new TranscriptServiceError(
+          TRANSCRIPT_ERRORS.INTERNAL_SERVER_ERROR,
+          "Failed to update transcript",
+          500
+        );
+      }
+
+      if (!updatedTranscript) {
+        throw new TranscriptServiceError(
+          TRANSCRIPT_ERRORS.INTERNAL_SERVER_ERROR,
+          "Transcript was not returned after update",
+          500
+        );
+      }
+
+      // Step 4: Return the updated transcript as DTO
+      return mapTranscriptRowToDTO(updatedTranscript);
+    } catch (error) {
+      // Re-throw TranscriptServiceError instances as-is
+      if (error instanceof TranscriptServiceError) {
+        throw error;
+      }
+
+      // Handle unexpected errors
+      console.error("Unexpected error in update:", error);
+      throw new TranscriptServiceError(
+        TRANSCRIPT_ERRORS.INTERNAL_SERVER_ERROR,
+        "An unexpected error occurred while updating the transcript",
+        500
+      );
+    }
+  }
+
+  /**
    * Deletes a transcript by ID.
    * Verifies that the transcript belongs to a thread owned by the user.
    *

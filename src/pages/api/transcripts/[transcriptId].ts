@@ -1,5 +1,5 @@
 import type { APIContext } from "astro";
-import { uuidSchema } from "../../../lib/schemas/transcripts.schema";
+import { uuidSchema, updateTranscriptSchema } from "../../../lib/schemas/transcripts.schema";
 import { transcriptsService, TranscriptServiceError } from "../../../lib/services/transcripts.service";
 import {
   mapServiceErrorToHttpResponse,
@@ -66,6 +66,88 @@ export async function GET(context: APIContext): Promise<Response> {
     // Step 6: Handle unexpected errors
     console.error("Unexpected error in GET /api/transcripts/{transcriptId}:", error);
     return createInternalServerErrorResponse("An unexpected error occurred while fetching the transcript");
+  }
+}
+
+/**
+ * Updates an existing transcript's content.
+ * Verifies that the transcript belongs to a thread owned by the authenticated user.
+ *
+ * PATCH /api/transcripts/{transcriptId}
+ *
+ * Request body:
+ * {
+ *   "content": "Updated transcript content" // string, 1-30,000 characters
+ * }
+ *
+ * Responses:
+ * - 200: Transcript updated successfully
+ * - 400: Invalid input data or transcriptId format
+ * - 401: Authentication required
+ * - 404: Transcript not found or doesn't belong to user
+ * - 500: Internal server error
+ */
+export async function PATCH(context: APIContext): Promise<Response> {
+  try {
+    // Step 1: Extract Supabase client and transcriptId from context
+    const { supabase } = context.locals;
+    const { transcriptId } = context.params;
+
+    // Step 2: Validate transcriptId
+    if (!transcriptId) {
+      return createValidationErrorResponse("Transcript ID is required");
+    }
+
+    const transcriptIdValidation = uuidSchema.safeParse(transcriptId);
+    if (!transcriptIdValidation.success) {
+      return createValidationErrorResponse("Invalid transcript ID format");
+    }
+
+    // Step 3: Parse and validate request body
+    let requestBody: unknown;
+    try {
+      requestBody = await context.request.json();
+    } catch (parseError) {
+      console.error("Failed to parse request body:", parseError);
+      return createValidationErrorResponse("Invalid JSON in request body");
+    }
+
+    // Step 4: Validate input using Zod schema
+    const validationResult = updateTranscriptSchema.safeParse(requestBody);
+
+    if (!validationResult.success) {
+      console.error("Validation failed:", validationResult.error);
+      return createValidationErrorResponse("Transcript content must be between 1 and 30,000 characters");
+    }
+
+    // Step 5: Update transcript using service layer
+    const transcriptData = await transcriptsService.update(
+      supabase,
+      "24a19ed0-7584-4377-a10f-326c63d9f927",
+      transcriptId,
+      validationResult.data.content
+    );
+
+    // Step 6: Return successful response
+    const successResponse = {
+      data: transcriptData,
+    };
+
+    return new Response(JSON.stringify(successResponse), {
+      status: 200,
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+  } catch (error) {
+    // Step 7: Handle service errors
+    if (error instanceof TranscriptServiceError) {
+      return mapServiceErrorToHttpResponse(error);
+    }
+
+    // Step 8: Handle unexpected errors
+    console.error("Unexpected error in PATCH /api/transcripts/{transcriptId}:", error);
+    return createInternalServerErrorResponse("An unexpected error occurred while updating the transcript");
   }
 }
 

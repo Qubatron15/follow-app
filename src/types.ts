@@ -50,6 +50,11 @@ export interface TranscriptDTO {
 export type CreateTranscriptCommand = Pick<TablesInsert<"transcripts">, "content">;
 
 /**
+ * Body schema for PATCH /api/transcripts/{transcriptId}.
+ */
+export type UpdateTranscriptCommand = Partial<Pick<TablesUpdate<"transcripts">, "content">>;
+
+/**
  * Action Point DTO – a single actionable item.
  */
 export interface ActionPointDTO {

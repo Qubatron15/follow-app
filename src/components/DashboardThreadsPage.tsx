@@ -2,6 +2,8 @@ import { useEffect } from "react";
 import { toast } from "sonner";
 import { ThreadsProvider, useThreadsContext } from "@/components/hooks/useThreadsContext";
 import { useThreads } from "@/components/hooks/useThreads";
+import { useTranscripts } from "@/components/hooks/useTranscripts";
+import { useSaveTranscript } from "@/components/hooks/useSaveTranscript";
 import ThreadTabs from "@/components/ThreadTabs";
 import TextareaTranscript from "@/components/TextareaTranscript";
 import ControlsBar from "@/components/ControlsBar";
@@ -21,11 +23,14 @@ function DashboardThreadsContent() {
     setThreads,
     setActiveThreadId,
     updateTranscriptDraft,
+    markTranscriptClean,
     setLoading,
     setError,
   } = useThreadsContext();
 
   const { data: fetchedThreads, isLoading: isFetching, error: fetchError, refetch } = useThreads();
+  const { transcripts, isLoading: isLoadingTranscripts, refetch: refetchTranscripts } = useTranscripts(activeThreadId);
+  const { saveTranscript, isSaving } = useSaveTranscript();
 
   // Update context when threads are fetched
   useEffect(() => {
@@ -41,6 +46,18 @@ function DashboardThreadsContent() {
       setError(fetchError);
     }
   }, [fetchedThreads, isFetching, fetchError, activeThreadId, setThreads, setActiveThreadId, setLoading, setError]);
+
+  // Load transcript when active thread changes or transcripts are fetched
+  useEffect(() => {
+    if (transcripts.length > 0 && activeThreadId) {
+      // Load the most recent transcript (first in array, sorted by created_at desc)
+      const latestTranscript = transcripts[0];
+      updateTranscriptDraft(latestTranscript.content, latestTranscript.id, false);
+    } else if (activeThreadId) {
+      // No transcripts for this thread, clear the draft
+      updateTranscriptDraft("", null, false);
+    }
+  }, [transcripts, activeThreadId, updateTranscriptDraft]);
 
   const handleThreadSelect = (threadId: string) => {
     setActiveThreadId(threadId);
@@ -82,14 +99,48 @@ function DashboardThreadsContent() {
   };
 
   const handleTranscriptChange = (value: string) => {
-    updateTranscriptDraft(value);
+    // Keep the existing transcriptId when updating content and mark as dirty
+    updateTranscriptDraft(value, transcriptDraft.transcriptId, true);
   };
 
-  const handleGenerate = () => {
-    // Placeholder for future AP generation
-    toast.info("Funkcja w przygotowaniu", {
-      description: "Generowanie Action Points będzie dostępne wkrótce.",
-    });
+  const handleGenerate = async () => {
+    if (!activeThreadId) {
+      toast.error("Błąd", {
+        description: "Nie wybrano wątku.",
+      });
+      return;
+    }
+
+    if (transcriptDraft.content.trim().length === 0) {
+      toast.error("Błąd", {
+        description: "Transkrypcja nie może być pusta.",
+      });
+      return;
+    }
+
+    // Save transcript (create or update)
+    const savedTranscript = await saveTranscript(
+      activeThreadId,
+      transcriptDraft.content,
+      transcriptDraft.transcriptId || undefined
+    );
+
+    if (savedTranscript) {
+      // Update the draft with the saved transcript ID and mark as clean
+      updateTranscriptDraft(savedTranscript.content, savedTranscript.id);
+      markTranscriptClean();
+      
+      // Refresh transcripts list
+      await refetchTranscripts();
+
+      toast.success("Transkrypcja zapisana", {
+        description: "Transkrypcja została pomyślnie zapisana. Generowanie Action Points będzie dostępne wkrótce.",
+      });
+    } else {
+      toast.error("Błąd", {
+        description: "Nie udało się zapisać transkrypcji.",
+      });
+    }
   };
 
   if (isLoading) {
@@ -122,7 +173,7 @@ function DashboardThreadsContent() {
   }
 
   const isGenerateDisabled =
-    transcriptDraft.isDirty ||
+    !transcriptDraft.isDirty ||
     transcriptDraft.content.length === 0 ||
     transcriptDraft.content.length > 30000;
 
@@ -175,7 +226,7 @@ function DashboardThreadsContent() {
         </div>
       )}
 
-      <SpinnerOverlay visible={false} label="Przetwarzanie..." />
+      <SpinnerOverlay visible={isSaving} label="Zapisywanie transkrypcji..." />
     </main>
   );
 }

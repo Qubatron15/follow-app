@@ -6,6 +6,7 @@ import type { ThreadDTO } from "@/types";
  */
 interface TranscriptDraft {
   threadId: string | null;
+  transcriptId: string | null;
   content: string;
   isDirty: boolean;
 }
@@ -21,7 +22,7 @@ interface ThreadsContextValue {
   error: string | null;
   setThreads: (threads: ThreadDTO[]) => void;
   setActiveThreadId: (threadId: string | null) => void;
-  updateTranscriptDraft: (content: string) => void;
+  updateTranscriptDraft: (content: string, transcriptId?: string | null, markDirty?: boolean) => void;
   markTranscriptClean: () => void;
   addThread: (thread: ThreadDTO) => void;
   setLoading: (loading: boolean) => void;
@@ -46,6 +47,7 @@ export function ThreadsProvider({ children }: ThreadsProviderProps) {
   const [activeThreadId, setActiveThreadId] = useState<string | null>(null);
   const [transcriptDraft, setTranscriptDraft] = useState<TranscriptDraft>({
     threadId: null,
+    transcriptId: null,
     content: "",
     isDirty: false,
   });
@@ -53,13 +55,14 @@ export function ThreadsProvider({ children }: ThreadsProviderProps) {
   const [error, setError] = useState<string | null>(null);
 
   /**
-   * Updates transcript content and marks it as dirty
+   * Updates transcript content and optionally marks it as dirty
    */
-  const updateTranscriptDraft = useCallback((content: string) => {
+  const updateTranscriptDraft = useCallback((content: string, transcriptId?: string | null, markDirty: boolean = true) => {
     setTranscriptDraft((prev) => ({
       ...prev,
       content,
-      isDirty: true,
+      transcriptId: transcriptId !== undefined ? transcriptId : prev.transcriptId,
+      isDirty: markDirty,
     }));
   }, []);
 
@@ -89,6 +92,7 @@ export function ThreadsProvider({ children }: ThreadsProviderProps) {
     // Reset transcript draft when switching threads
     setTranscriptDraft({
       threadId,
+      transcriptId: null,
       content: "",
       isDirty: false,
     });
