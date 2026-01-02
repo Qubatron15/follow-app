@@ -21,12 +21,11 @@ function DashboardThreadsContent() {
     setThreads,
     setActiveThreadId,
     updateTranscriptDraft,
-    addThread,
     setLoading,
     setError,
   } = useThreadsContext();
 
-  const { data: fetchedThreads, isLoading: isFetching, error: fetchError } = useThreads();
+  const { data: fetchedThreads, isLoading: isFetching, error: fetchError, refetch } = useThreads();
 
   // Update context when threads are fetched
   useEffect(() => {
@@ -47,8 +46,13 @@ function DashboardThreadsContent() {
     setActiveThreadId(threadId);
   };
 
-  const handleThreadCreated = (thread: ThreadDTO) => {
-    addThread(thread);
+  const handleThreadCreated = async (thread: ThreadDTO) => {
+    // Refresh the threads list from the server
+    await refetch();
+
+    // Set the newly created thread as active
+    setActiveThreadId(thread.id);
+
     toast.success("Wątek utworzony", {
       description: `Wątek "${thread.name}" został pomyślnie utworzony.`,
     });
