@@ -139,8 +139,11 @@ function DashboardThreadsContent() {
       // Refresh transcripts list
       await refetchTranscripts();
 
+      // Refresh action points list (new APs created automatically by backend)
+      await refetchActionPoints();
+
       toast.success("Transkrypcja zapisana", {
-        description: "Transkrypcja została pomyślnie zapisana. Generowanie Action Points będzie dostępne wkrótce.",
+        description: "Transkrypcja została pomyślnie zapisana. Action Points zostały automatycznie utworzone.",
       });
     } else {
       toast.error("Błąd", {
