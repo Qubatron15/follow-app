@@ -1,6 +1,7 @@
 import type { APIContext } from "astro";
 import { createTranscriptSchema, uuidSchema } from "../../../../../lib/schemas/transcripts.schema";
 import { transcriptsService, TranscriptServiceError } from "../../../../../lib/services/transcripts.service";
+import { actionPointsService } from "../../../../../lib/services/action-points.service";
 import {
   mapServiceErrorToHttpResponse,
   createValidationErrorResponse,
@@ -70,6 +71,7 @@ export async function GET(context: APIContext): Promise<Response> {
 
 /**
  * Creates a new transcript for a specific thread.
+ * Additionally creates three default action points: "jajka", "mleko", "mąka".
  *
  * POST /api/threads/{threadId}/transcripts
  *
@@ -79,11 +81,13 @@ export async function GET(context: APIContext): Promise<Response> {
  * }
  *
  * Responses:
- * - 201: Transcript created successfully
+ * - 201: Transcript created successfully (action points created in background)
  * - 400: Invalid input data or threadId
  * - 401: Authentication required
  * - 404: Thread not found or doesn't belong to user
  * - 500: Internal server error
+ *
+ * Note: If action points creation fails, the transcript is still created successfully.
  */
 export async function POST(context: APIContext): Promise<Response> {
   try {
@@ -126,7 +130,22 @@ export async function POST(context: APIContext): Promise<Response> {
       validationResult.data.content
     );
 
-    // Step 6: Return successful response
+    // Step 6: Create default action points for the thread
+    const userId = "24a19ed0-7584-4377-a10f-326c63d9f927";
+    const defaultActionPoints = ["jajka", "mleko", "mąka"];
+
+    try {
+      await Promise.all(
+        defaultActionPoints.map((title) =>
+          actionPointsService.create(supabase, userId, threadId, title, false)
+        )
+      );
+    } catch (apError) {
+      // Log error but don't fail the request - transcript was already created
+      console.error("Failed to create default action points:", apError);
+    }
+
+    // Step 7: Return successful response
     const successResponse = {
       data: transcriptData,
     };
