@@ -31,17 +31,19 @@ G-06 Brak możliwości przywracania usuniętych AP i historii zmian.
 ## 5. Historyjki użytkowników
 | ID | Tytuł | Opis | Kryteria akceptacji |
 |----|-------|------|---------------------|
-| US-001 | Utworzenie nowego wątku | Jako manager chcę utworzyć nowy wątek, aby śledzić AP dla danego projektu. | • Po kliknięciu „Nowy wątek” wyświetla się modal z polem nazwy. • Pole nazwy nie przyjmuje pustej wartości i ogranicza długość do 20 znaków. • Po zatwierdzeniu wątek pojawia się jako zakładka z unikalną nazwą. |
-| US-002 | Wyświetlenie pustego stanu | Jako nowy użytkownik chcę zobaczyć jasny ekran startowy, aby wiedzieć od czego zacząć. | • Przy braku wątków wyświetla się ekran powitalny z przyciskiem „Nowy wątek”. |
-| US-003 | Wklejenie transkrypcji | Jako manager chcę wkleić transkrypcję spotkania do wybranego wątku, aby móc wygenerować AP. | • Pole tekstowe przyjmuje maks. 30 000 znaków. • Wklejona transkrypcja jest przypisana wyłącznie do aktywnego wątku. |
-| US-004 | Generowanie AP | Jako manager chcę, aby AI wygenerowało AP na podstawie transkrypcji, żebym oszczędził czas. | • Po kliknięciu „Generuj Action Pointy” lista AP aktualizuje się w ≤10 min. • Nowe AP pojawiają się na liście. |
-| US-005 | Regeneracja AP | Jako manager chcę ponownie wygenerować AP po edycji transkrypcji, aby mieć aktualną listę. | • Po kliknięciu „Generuj ponownie” AI ponownie przetwarza transkrypcję i aktualizuje listę AP. |
-| US-006 | Edycja AP | Jako manager chcę edytować treść AP, aby doprecyzować zadania. | • Kliknięcie ikonki edycji umożliwia zmianę treści i zapisywanie zmian. |
-| US-007 | Usuwanie AP | Jako manager chcę usuwać niepotrzebne AP, aby utrzymać listę aktualną. | • Kliknięcie ikonki kosza usuwa AP i usuwa je trwale bez możliwości cofnięcia. |
-| US-008 | Dodawanie własnych AP | Jako manager chcę ręcznie dodać AP, których AI nie wykryło, aby lista była kompletna. | • Przycisk „Dodaj AP” otwiera formularz z polem treści i checkboxem default „unchecked”. • Po zapisaniu AP pojawia się na liście. |
-| US-009 | Oznaczanie statusu AP | Jako manager chcę oznaczać AP jako wykonane lub niewykonane, aby śledzić postęp. | • Lista AP umożliwia zmianę statusu poprzez checkbox. |
-| US-010 | Obsługa błędu AI | Jako manager chcę otrzymać czytelny komunikat w razie błędu AI, by wiedzieć co się stało. | • W przypadku błędu AI pojawia się komunikat. • Transkrypcja pozostaje nietknięta, lista AP się nie zmienia. |
-| US-011 | Logowanie użytkownika | Jako użytkownik chcę się zalogować do aplikacji, aby uzyskać dostęp do swoich danych i zabezpieczyć dostęp. | • Po wejściu na stronę aplikacja wyświetla formularz logowania. • Po poprawnym uwierzytelnieniu użytkownik uzyskuje dostęp do pełnej funkcjonalności.
+| US-001 | Utworzenie nowego wątku | Jako manager chcę utworzyć nowy wątek, aby śledzić AP dla danego projektu. | • Po kliknięciu „Nowy wątek” wyświetla się modal z polem nazwy. • Pole nazwy nie przyjmuje pustej wartości i ogranicza długość do 20 znaków. • Po zatwierdzeniu wątek pojawia się jako zakładka z unikalną nazwą. • Tworzenie nowego wątku nie jest dostępne dla niezalogowanych użytkowników. |
+| US-002 | Wyświetlenie pustego stanu | Jako nowy użytkownik chcę zobaczyć jasny ekran startowy, aby wiedzieć od czego zacząć. | • Przy braku wątków wyświetla się ekran powitalny z przyciskiem „Nowy wątek”. • Wyświetlenie pustego stanu nie jest dostępne dla niezalogowanych użytkowników. |
+| US-003 | Wklejenie transkrypcji | Jako manager chcę wkleić transkrypcję spotkania do wybranego wątku, aby móc wygenerować AP. | • Pole tekstowe przyjmuje maks. 30 000 znaków. • Wklejona transkrypcja jest przypisana wyłącznie do aktywnego wątku. • Wkleianie transkrypcji nie jest dostępne dla niezalogowanych użytkowników. |
+| US-004 | Generowanie AP | Jako manager chcę, aby AI wygenerowało AP na podstawie transkrypcji, żebym oszczędził czas. | • Po kliknięciu „Generuj Action Pointy” lista AP aktualizuje się w ≤10 min. • Nowe AP pojawiają się na liście. • Generowanie AP nie jest dostępne dla niezalogowanych użytkowników. |
+| US-005 | Edycja AP | Jako manager chcę edytować treść AP, aby doprecyzować zadania. | • Kliknięcie ikonki edycji umożliwia zmianę treści i zapisywanie zmian. • Edycja AP nie jest dostępne dla niezalogowanych użytkowników. |
+| US-006 | Usuwanie AP | Jako manager chcę usuwać niepotrzebne AP, aby utrzymać listę aktualną. | • Kliknięcie ikonki kosza usuwa AP i usuwa je trwale bez możliwości cofnięcia. • Usuwanie AP nie jest dostępne dla niezalogowanych użytkowników. |
+| US-007 | Dodawanie własnych AP | Jako manager chcę ręcznie dodać AP, których AI nie wykryło, aby lista była kompletna. | • Przycisk „Dodaj AP” otwiera formularz z polem treści i checkboxem default „unchecked”. • Po zapisaniu AP pojawia się na liście. • Dodawanie własnych AP nie jest dostępne dla niezalogowanych użytkowników. |
+| US-008 | Oznaczanie statusu AP | Jako manager chcę oznaczać AP jako wykonane lub niewykonane, aby śledzić postęp. | • Lista AP umożliwia zmianę statusu poprzez checkbox. • Oznaczanie statusu AP nie jest dostępne dla niezalogowanych użytkowników. |
+| US-009 | Obsługa błędu AI | Jako manager chcę otrzymać czytelny komunikat w razie błędu AI, by wiedzieć co się stało. | • W przypadku błędu AI pojawia się komunikat. • Transkrypcja pozostaje nietknięta, lista AP się nie zmienia. |
+| US-010 | Logowanie użytkownika | Jako użytkownik chcę się zalogować do aplikacji, aby uzyskać dostęp do swoich danych i zabezpieczyć dostęp. | • Jeśli użytkownik nie jest zalogowany, aplikacja wyświetla dedykowany ekran logowania z polami „e-mail” i „hasło”. • Po poprawnym uwierzytelnieniu użytkownik uzyskuje dostęp do wszystkich funkcji z PRD (wątki, transkrypcje, action pointy). • W prawym górnym rogu `Layout.astro` widoczny jest przycisk „Wyloguj”, który po użyciu kończy sesję i przenosi na ekran logowania. • Próba otwarcia widoków wymagających uwierzytelnienia bez aktywnej sesji przekierowuje na ekran logowania.
+
+
+
 
 ## 6. Metryki sukcesu
 M-01 Co najmniej 80 % action pointów wygenerowanych przez AI pozostaje nieusuniętych po ręcznej weryfikacji użytkownika.
