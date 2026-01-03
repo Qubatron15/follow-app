@@ -22,11 +22,18 @@ export const prerender = false;
  */
 export async function GET(context: APIContext): Promise<Response> {
   try {
-    // Step 1: Extract Supabase client from context
-    const { supabase } = context.locals;
+    // Step 1: Extract Supabase client and user from context
+    const { supabase, user } = context.locals;
+
+    if (!user) {
+      return new Response(JSON.stringify({ error: { code: "AUTH_REQUIRED", message: "Authentication required" } }), {
+        status: 401,
+        headers: { "Content-Type": "application/json" },
+      });
+    }
 
     // Step 2: Fetch threads using service layer
-    const threads = await threadsService.getThreadsByUser(supabase, "24a19ed0-7584-4377-a10f-326c63d9f927");
+    const threads = await threadsService.getThreadsByUser(supabase, user.id);
 
     // Step 3: Return successful response
     const successResponse = {
@@ -72,7 +79,14 @@ export async function GET(context: APIContext): Promise<Response> {
 export async function POST(context: APIContext): Promise<Response> {
   try {
     // Step 1: Extract Supabase client and user from context
-    const { supabase } = context.locals;
+    const { supabase, user } = context.locals;
+
+    if (!user) {
+      return new Response(JSON.stringify({ error: { code: "AUTH_REQUIRED", message: "Authentication required" } }), {
+        status: 401,
+        headers: { "Content-Type": "application/json" },
+      });
+    }
 
     // Step 2: Parse and validate request body
     let requestBody: unknown;
@@ -92,11 +106,7 @@ export async function POST(context: APIContext): Promise<Response> {
     }
 
     // Step 5: Create thread using service layer
-    const threadData = await threadsService.createThread(
-      supabase,
-      "24a19ed0-7584-4377-a10f-326c63d9f927",
-      validationResult.data.name
-    );
+    const threadData = await threadsService.createThread(supabase, user.id, validationResult.data.name);
 
     // Step 6: Return successful response
     const successResponse = {

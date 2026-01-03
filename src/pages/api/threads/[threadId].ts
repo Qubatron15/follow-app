@@ -30,9 +30,16 @@ export const prerender = false;
  */
 export async function PATCH(context: APIContext): Promise<Response> {
   try {
-    // Step 1: Extract Supabase client and threadId from context
-    const { supabase } = context.locals;
+    // Step 1: Extract Supabase client, user, and threadId from context
+    const { supabase, user } = context.locals;
     const { threadId } = context.params;
+
+    if (!user) {
+      return new Response(JSON.stringify({ error: { code: "AUTH_REQUIRED", message: "Authentication required" } }), {
+        status: 401,
+        headers: { "Content-Type": "application/json" },
+      });
+    }
 
     if (!threadId) {
       return createValidationErrorResponse("Thread ID is required");
@@ -56,12 +63,7 @@ export async function PATCH(context: APIContext): Promise<Response> {
     }
 
     // Step 4: Update thread using service layer
-    const threadData = await threadsService.updateThread(
-      supabase,
-      "24a19ed0-7584-4377-a10f-326c63d9f927",
-      threadId,
-      validationResult.data.name
-    );
+    const threadData = await threadsService.updateThread(supabase, user.id, threadId, validationResult.data.name);
 
     // Step 5: Return successful response
     const successResponse = {
@@ -101,16 +103,23 @@ export async function PATCH(context: APIContext): Promise<Response> {
  */
 export async function DELETE(context: APIContext): Promise<Response> {
   try {
-    // Step 1: Extract Supabase client and threadId from context
-    const { supabase } = context.locals;
+    // Step 1: Extract Supabase client, user, and threadId from context
+    const { supabase, user } = context.locals;
     const { threadId } = context.params;
+
+    if (!user) {
+      return new Response(JSON.stringify({ error: { code: "AUTH_REQUIRED", message: "Authentication required" } }), {
+        status: 401,
+        headers: { "Content-Type": "application/json" },
+      });
+    }
 
     if (!threadId) {
       return createValidationErrorResponse("Thread ID is required");
     }
 
     // Step 2: Delete thread using service layer
-    await threadsService.deleteThread(supabase, "24a19ed0-7584-4377-a10f-326c63d9f927", threadId);
+    await threadsService.deleteThread(supabase, user.id, threadId);
 
     // Step 3: Return successful response (204 No Content)
     return new Response(null, {

@@ -1,13 +1,11 @@
 import type { APIContext } from "astro";
+import { requireAuth, createUnauthorizedResponse } from "../../../../../lib/auth-helpers";
 import {
   createActionPointSchema,
   uuidSchema,
   booleanStringSchema,
 } from "../../../../../lib/schemas/action-points.schema";
-import {
-  actionPointsService,
-  ActionPointServiceError,
-} from "../../../../../lib/services/action-points.service";
+import { actionPointsService, ActionPointServiceError } from "../../../../../lib/services/action-points.service";
 import {
   mapServiceErrorToHttpResponse,
   createValidationErrorResponse,
@@ -34,9 +32,13 @@ export const prerender = false;
  */
 export async function GET(context: APIContext): Promise<Response> {
   try {
-    // Step 1: Extract Supabase client and threadId from context
-    const { supabase } = context.locals;
+    // Step 1: Extract Supabase client, user, and threadId from context
+    const { supabase, user } = context.locals;
     const { threadId } = context.params;
+
+    if (!requireAuth(user)) {
+      return createUnauthorizedResponse();
+    }
 
     // Step 2: Validate threadId parameter
     if (!threadId) {
@@ -62,12 +64,7 @@ export async function GET(context: APIContext): Promise<Response> {
     }
 
     // Step 4: Fetch action points using service layer
-    const actionPoints = await actionPointsService.list(
-      supabase,
-      "24a19ed0-7584-4377-a10f-326c63d9f927",
-      threadId,
-      completed
-    );
+    const actionPoints = await actionPointsService.list(supabase, user.id, threadId, completed);
 
     // Step 5: Return successful response
     const successResponse = {
@@ -111,9 +108,13 @@ export async function GET(context: APIContext): Promise<Response> {
  */
 export async function POST(context: APIContext): Promise<Response> {
   try {
-    // Step 1: Extract Supabase client and threadId from context
-    const { supabase } = context.locals;
+    // Step 1: Extract Supabase client, user, and threadId from context
+    const { supabase, user } = context.locals;
     const { threadId } = context.params;
+
+    if (!requireAuth(user)) {
+      return createUnauthorizedResponse();
+    }
 
     // Step 2: Validate threadId parameter
     if (!threadId) {
@@ -145,7 +146,7 @@ export async function POST(context: APIContext): Promise<Response> {
     // Step 5: Create action point using service layer
     const actionPointData = await actionPointsService.create(
       supabase,
-      "24a19ed0-7584-4377-a10f-326c63d9f927",
+      user.id,
       threadId,
       validationResult.data.title,
       validationResult.data.isCompleted

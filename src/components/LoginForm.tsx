@@ -37,20 +37,36 @@ export default function LoginForm({ redirectTo = "/" }: LoginFormProps) {
     setIsLoading(true);
 
     try {
-      // TODO: Implement actual login logic with Supabase
-      // For now, just show a placeholder message
-      toast.info("Logowanie", {
-        description: "Funkcja logowania zostanie wkrótce zaimplementowana.",
+      // Call login API endpoint
+      const response = await fetch("/api/auth/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
       });
-      
-      // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-      
-      console.log("Login attempt:", formData);
-      console.log("Redirect to:", redirectTo);
-    } catch (error) {
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        // Handle error response
+        toast.error("Błąd logowania", {
+          description: data.error?.message || "Nie udało się zalogować. Spróbuj ponownie.",
+        });
+        return;
+      }
+
+      // Success - show toast and redirect
+      toast.success("Zalogowano pomyślnie", {
+        description: `Witaj, ${data.user.email}!`,
+      });
+
+      // Redirect to the intended page or /threads
+      const targetUrl = redirectTo && redirectTo !== "/" ? redirectTo : "/threads";
+      window.location.href = targetUrl;
+    } catch {
       toast.error("Błąd logowania", {
-        description: "Nie udało się zalogować. Spróbuj ponownie.",
+        description: "Nie udało się połączyć z serwerem. Spróbuj ponownie.",
       });
     } finally {
       setIsLoading(false);

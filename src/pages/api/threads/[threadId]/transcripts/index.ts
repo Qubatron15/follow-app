@@ -1,4 +1,5 @@
 import type { APIContext } from "astro";
+import { requireAuth, createUnauthorizedResponse } from "../../../../../lib/auth-helpers";
 import { createTranscriptSchema, uuidSchema } from "../../../../../lib/schemas/transcripts.schema";
 import { transcriptsService, TranscriptServiceError } from "../../../../../lib/services/transcripts.service";
 import { aiService } from "../../../../../lib/services/ai.service";
@@ -25,9 +26,13 @@ export const prerender = false;
  */
 export async function GET(context: APIContext): Promise<Response> {
   try {
-    // Step 1: Extract Supabase client and threadId from context
-    const { supabase } = context.locals;
+    // Step 1: Extract Supabase client, user, and threadId from context
+    const { supabase, user } = context.locals;
     const { threadId } = context.params;
+
+    if (!requireAuth(user)) {
+      return createUnauthorizedResponse();
+    }
 
     // Step 2: Validate threadId
     if (!threadId) {
@@ -40,11 +45,7 @@ export async function GET(context: APIContext): Promise<Response> {
     }
 
     // Step 3: Fetch transcripts using service layer
-    const transcripts = await transcriptsService.list(
-      supabase,
-      "24a19ed0-7584-4377-a10f-326c63d9f927",
-      threadId
-    );
+    const transcripts = await transcriptsService.list(supabase, user.id, threadId);
 
     // Step 4: Return successful response
     const successResponse = {
@@ -91,9 +92,13 @@ export async function GET(context: APIContext): Promise<Response> {
  */
 export async function POST(context: APIContext): Promise<Response> {
   try {
-    // Step 1: Extract Supabase client and threadId from context
-    const { supabase } = context.locals;
+    // Step 1: Extract Supabase client, user, and threadId from context
+    const { supabase, user } = context.locals;
     const { threadId } = context.params;
+
+    if (!requireAuth(user)) {
+      return createUnauthorizedResponse();
+    }
 
     // Step 2: Validate threadId
     if (!threadId) {
@@ -123,18 +128,11 @@ export async function POST(context: APIContext): Promise<Response> {
     }
 
     // Step 5: Create transcript using service layer
-    const transcriptData = await transcriptsService.create(
-      supabase,
-      "24a19ed0-7584-4377-a10f-326c63d9f927",
-      threadId,
-      validationResult.data.content
-    );
+    const transcriptData = await transcriptsService.create(supabase, user.id, threadId, validationResult.data.content);
 
     // Step 6: Generate action points using AI based on transcript content
-    const userId = "24a19ed0-7584-4377-a10f-326c63d9f927";
-
     try {
-      await aiService.generateActionPointsFromTranscript(supabase, userId, threadId, validationResult.data.content);
+      await aiService.generateActionPointsFromTranscript(supabase, user.id, threadId, validationResult.data.content);
     } catch (aiError) {
       // AI generation failed - return error to frontend
       console.error("AI action points generation failed:", aiError);

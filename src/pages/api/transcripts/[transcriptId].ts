@@ -1,4 +1,5 @@
 import type { APIContext } from "astro";
+import { requireAuth, createUnauthorizedResponse } from "../../../lib/auth-helpers";
 import { uuidSchema, updateTranscriptSchema } from "../../../lib/schemas/transcripts.schema";
 import { transcriptsService, TranscriptServiceError } from "../../../lib/services/transcripts.service";
 import { aiService } from "../../../lib/services/ai.service";
@@ -26,9 +27,13 @@ export const prerender = false;
  */
 export async function GET(context: APIContext): Promise<Response> {
   try {
-    // Step 1: Extract Supabase client and transcriptId from context
-    const { supabase } = context.locals;
+    // Step 1: Extract Supabase client, user, and transcriptId from context
+    const { supabase, user } = context.locals;
     const { transcriptId } = context.params;
+
+    if (!requireAuth(user)) {
+      return createUnauthorizedResponse();
+    }
 
     // Step 2: Validate transcriptId
     if (!transcriptId) {
@@ -41,11 +46,7 @@ export async function GET(context: APIContext): Promise<Response> {
     }
 
     // Step 3: Fetch transcript using service layer
-    const transcriptData = await transcriptsService.get(
-      supabase,
-      "24a19ed0-7584-4377-a10f-326c63d9f927",
-      transcriptId
-    );
+    const transcriptData = await transcriptsService.get(supabase, user.id, transcriptId);
 
     // Step 4: Return successful response
     const successResponse = {
@@ -93,9 +94,13 @@ export async function GET(context: APIContext): Promise<Response> {
  */
 export async function PATCH(context: APIContext): Promise<Response> {
   try {
-    // Step 1: Extract Supabase client and transcriptId from context
-    const { supabase } = context.locals;
+    // Step 1: Extract Supabase client, user, and transcriptId from context
+    const { supabase, user } = context.locals;
     const { transcriptId } = context.params;
+
+    if (!requireAuth(user)) {
+      return createUnauthorizedResponse();
+    }
 
     // Step 2: Validate transcriptId
     if (!transcriptId) {
@@ -125,19 +130,13 @@ export async function PATCH(context: APIContext): Promise<Response> {
     }
 
     // Step 5: Update transcript using service layer
-    const transcriptData = await transcriptsService.update(
-      supabase,
-      "24a19ed0-7584-4377-a10f-326c63d9f927",
-      transcriptId,
-      validationResult.data.content
-    );
+    const transcriptData = await transcriptsService.update(supabase, user.id, transcriptId, validationResult.data.content);
 
     // Step 6: Generate action points using AI based on transcript content
-    const userId = "24a19ed0-7584-4377-a10f-326c63d9f927";
     const threadId = transcriptData.threadId;
 
     try {
-      await aiService.generateActionPointsFromTranscript(supabase, userId, threadId, validationResult.data.content);
+      await aiService.generateActionPointsFromTranscript(supabase, user.id, threadId, validationResult.data.content);
     } catch (aiError) {
       // AI generation failed - return error to frontend
       console.error("AI action points generation failed:", aiError);
@@ -184,9 +183,13 @@ export async function PATCH(context: APIContext): Promise<Response> {
  */
 export async function DELETE(context: APIContext): Promise<Response> {
   try {
-    // Step 1: Extract Supabase client and transcriptId from context
-    const { supabase } = context.locals;
+    // Step 1: Extract Supabase client, user, and transcriptId from context
+    const { supabase, user } = context.locals;
     const { transcriptId } = context.params;
+
+    if (!requireAuth(user)) {
+      return createUnauthorizedResponse();
+    }
 
     // Step 2: Validate transcriptId
     if (!transcriptId) {
@@ -199,7 +202,7 @@ export async function DELETE(context: APIContext): Promise<Response> {
     }
 
     // Step 3: Delete transcript using service layer
-    await transcriptsService.remove(supabase, "24a19ed0-7584-4377-a10f-326c63d9f927", transcriptId);
+    await transcriptsService.remove(supabase, user.id, transcriptId);
 
     // Step 4: Return successful response (204 No Content)
     return new Response(null, {

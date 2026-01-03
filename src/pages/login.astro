@@ -4,6 +4,11 @@ import LoginForm from "@/components/LoginForm";
 
 export const prerender = false;
 
+// If user is already logged in, redirect to threads
+if (Astro.locals.user) {
+  return Astro.redirect("/threads");
+}
+
 // Get redirect parameter from URL
 const url = new URL(Astro.request.url);
 const redirectTo = url.searchParams.get("redirect") || "/";

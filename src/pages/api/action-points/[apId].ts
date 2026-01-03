@@ -1,12 +1,7 @@
 import type { APIContext } from "astro";
-import {
-  updateActionPointSchema,
-  uuidSchema,
-} from "../../../lib/schemas/action-points.schema";
-import {
-  actionPointsService,
-  ActionPointServiceError,
-} from "../../../lib/services/action-points.service";
+import { requireAuth, createUnauthorizedResponse } from "../../../lib/auth-helpers";
+import { updateActionPointSchema, uuidSchema } from "../../../lib/schemas/action-points.schema";
+import { actionPointsService, ActionPointServiceError } from "../../../lib/services/action-points.service";
 import {
   mapServiceErrorToHttpResponse,
   createValidationErrorResponse,
@@ -35,9 +30,13 @@ export const prerender = false;
  */
 export async function PATCH(context: APIContext): Promise<Response> {
   try {
-    // Step 1: Extract Supabase client and apId from context
-    const { supabase } = context.locals;
+    // Step 1: Extract Supabase client, user, and apId from context
+    const { supabase, user } = context.locals;
     const { apId } = context.params;
+
+    if (!requireAuth(user)) {
+      return createUnauthorizedResponse();
+    }
 
     // Step 2: Validate apId parameter
     if (!apId) {
@@ -69,12 +68,7 @@ export async function PATCH(context: APIContext): Promise<Response> {
     }
 
     // Step 5: Update action point using service layer
-    const actionPointData = await actionPointsService.update(
-      supabase,
-      "24a19ed0-7584-4377-a10f-326c63d9f927",
-      apId,
-      validationResult.data
-    );
+    const actionPointData = await actionPointsService.update(supabase, user.id, apId, validationResult.data);
 
     // Step 6: Return successful response
     const successResponse = {
@@ -113,9 +107,13 @@ export async function PATCH(context: APIContext): Promise<Response> {
  */
 export async function DELETE(context: APIContext): Promise<Response> {
   try {
-    // Step 1: Extract Supabase client and apId from context
-    const { supabase } = context.locals;
+    // Step 1: Extract Supabase client, user, and apId from context
+    const { supabase, user } = context.locals;
     const { apId } = context.params;
+
+    if (!requireAuth(user)) {
+      return createUnauthorizedResponse();
+    }
 
     // Step 2: Validate apId parameter
     if (!apId) {
@@ -128,7 +126,7 @@ export async function DELETE(context: APIContext): Promise<Response> {
     }
 
     // Step 3: Delete action point using service layer
-    await actionPointsService.remove(supabase, "24a19ed0-7584-4377-a10f-326c63d9f927", apId);
+    await actionPointsService.remove(supabase, user.id, apId);
 
     // Step 4: Return successful response (204 No Content)
     return new Response(null, {
