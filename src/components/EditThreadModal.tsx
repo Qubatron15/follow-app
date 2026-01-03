@@ -1,4 +1,4 @@
-import { useState, useId, useEffect } from "react";
+import { useState, useId, useEffect, useRef } from "react";
 import type { FormEvent } from "react";
 import {
   Dialog,
@@ -32,6 +32,7 @@ export default function EditThreadModal({ isOpen, onClose, thread, onThreadUpdat
 
   const nameInputId = useId();
   const errorId = useId();
+  const inputRef = useRef<HTMLInputElement>(null);
 
   // Initialize name when thread changes
   useEffect(() => {
@@ -39,6 +40,17 @@ export default function EditThreadModal({ isOpen, onClose, thread, onThreadUpdat
       setName(thread.name);
     }
   }, [thread]);
+
+  // Focus input when modal opens
+  useEffect(() => {
+    if (isOpen && inputRef.current) {
+      // Small delay to ensure modal animation completes
+      const timeoutId = setTimeout(() => {
+        inputRef.current?.focus();
+      }, 100);
+      return () => clearTimeout(timeoutId);
+    }
+  }, [isOpen]);
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -117,6 +129,7 @@ export default function EditThreadModal({ isOpen, onClose, thread, onThreadUpdat
                 </span>
               </Label>
               <Input
+                ref={inputRef}
                 id={nameInputId}
                 type="text"
                 value={name}
@@ -126,7 +139,6 @@ export default function EditThreadModal({ isOpen, onClose, thread, onThreadUpdat
                 aria-invalid={!!displayError}
                 aria-describedby={displayError ? errorId : undefined}
                 disabled={isUpdating}
-                autoFocus
               />
 
               {/* Character counter */}

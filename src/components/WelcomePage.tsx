@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import { useThreads } from "./hooks/useThreads";
 import EmptyState from "./EmptyState";
 import CreateThreadModal from "./CreateThreadModal";
-import type { ThreadDTO } from "@/types";
 
 /**
  * WelcomePage component - Main welcome screen for users without threads.
@@ -28,7 +27,7 @@ export default function WelcomePage() {
     setIsModalOpen(false);
   };
 
-  const handleThreadCreated = async (thread: ThreadDTO) => {
+  const handleThreadCreated = async () => {
     setIsModalOpen(false);
     window.location.href = `/threads`;
   };
