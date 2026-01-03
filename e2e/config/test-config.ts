@@ -11,7 +11,7 @@ export const TEST_CONFIG = {
   },
 
   // Base URL
-  baseUrl: process.env.BASE_URL || "http://localhost:3000",
+  baseUrl: process.env.BASE_URL || "https://follow-app.vercel.app",
 
   // Timeouts
   timeouts: {

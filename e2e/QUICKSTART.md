@@ -12,15 +12,19 @@ npm install
 npx playwright install chromium
 ```
 
-### 2. Uruchomienie aplikacji
+### 2. Konfiguracja
 
-W osobnym terminalu uruchom serwer deweloperski:
+Testy domyślnie uruchamiają się na wdrożonej aplikacji: `https://follow-app.vercel.app`
+
+Jeśli chcesz testować lokalnie, ustaw zmienną środowiskową:
 
 ```bash
+# Utwórz plik .env w katalogu e2e/
+echo "BASE_URL=http://localhost:4321" > e2e/.env
+
+# Następnie uruchom serwer deweloperski w osobnym terminalu
 npm run dev
 ```
-
-Aplikacja powinna być dostępna pod adresem: `http://localhost:4321`
 
 ### 3. Uruchomienie testów
 
@@ -101,7 +105,7 @@ Plik zawiera również testy dla:
 
 ### Test nie może się zalogować
 
-- Sprawdź, czy aplikacja działa na `http://localhost:4321`
+- Sprawdź, czy aplikacja jest dostępna pod `https://follow-app.vercel.app` (lub `http://localhost:4321` dla testów lokalnych)
 - Sprawdź, czy dane logowania są poprawne
 - Sprawdź, czy Supabase jest skonfigurowany
 

@@ -95,6 +95,10 @@ npx playwright show-report
 
 Generate tests by recording your actions:
 ```bash
+# For deployed app
+npx playwright codegen https://follow-app.vercel.app
+
+# For local development
 npx playwright codegen http://localhost:4321
 ```
 
