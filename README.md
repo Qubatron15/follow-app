@@ -32,7 +32,15 @@ The result is one central, always up-to-date source of truth for all of your ong
 |           | **shadcn/ui** | Accessible pre-styled React UI components |
 | Back-end  | **Supabase** | PostgreSQL, Auth, Storage |
 | AI        | **OpenAI API** | LLM-powered AP extraction |
+| Testing   | **Jest** + **ts-jest** | Unit & integration tests |
+|           | **Supertest** | HTTP API testing |
+|           | **Testing Library** | React & Astro component tests |
+|           | **Playwright** | E2E tests, accessibility (axe-core), visual regression |
+|           | **k6** | Performance & load testing |
+|           | **OWASP ZAP** | Security testing (dynamic analysis) |
+|           | **eslint-plugin-security** | Static security analysis |
 | Dev Ops   | **GitHub Actions** | CI/CD pipelines |
+|           | **Docker Compose** | Local Supabase test stack |
 
 > Runtime packages (excerpt) are declared in `package.json`; major ones include `astro@^5.13`, `react@^19.1`, `tailwindcss@^4.1`.
 
@@ -74,6 +82,9 @@ $ npm run preview
 | `npm run lint`    | Lints all files with ESLint                     |
 | `npm run lint:fix`| Lints & automatically fixes issues              |
 | `npm run format`  | Formats codebase with Prettier                  |
+| `npm run test`    | Runs unit & integration tests with Jest         |
+| `npm run test:e2e`| Runs E2E tests with Playwright                  |
+| `npm run test:perf`| Runs performance tests with k6                 |
 
 ---
 
@@ -103,6 +114,14 @@ MVP features are under **active development**. Success metrics for the first pub
 1. ≥ 80 % of AI-generated APs remain after manual review.
 2. Stable performance for ≥ 10 concurrent threads; AI operations ≤ 10 min.
 3. Post end-to-end test feedback limited to minor UI polish (≤ 3 issues).
+
+### Quality Assurance
+The project maintains high quality standards through comprehensive testing:
+- **Code coverage**: ≥ 85% for `src/lib/**`
+- **API performance**: < 300ms response time (p95) at 50 RPS
+- **Security**: BOLA protection, OWASP ZAP validation, no critical vulnerabilities
+- **Accessibility**: WCAG 2.1 AA compliance on all main screens
+- **CI/CD**: Automated test suite blocks merges on failure
 
 Roadmap items such as notifications and third-party integrations will be revisited after the MVP milestone.
 
