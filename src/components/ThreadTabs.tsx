@@ -184,29 +184,29 @@ export default function ThreadTabs({
                 </DropdownMenu>
               </div>
             ))}
+
+            <button
+              onClick={handleOpenCreateModal}
+              aria-label="Utwórz nowy wątek"
+              className="h-11 w-11 rounded-full flex-shrink-0 flex items-center justify-center font-bold text-xl transition-all duration-200 shadow-md hover:shadow-lg ml-2"
+              style={{
+                backgroundColor: semanticColors.primary,
+                color: semanticColors.textOnPrimary,
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.backgroundColor = semanticColors.primaryHover;
+                e.currentTarget.style.transform = "scale(1.05)";
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.backgroundColor = semanticColors.primary;
+                e.currentTarget.style.transform = "scale(1)";
+              }}
+              data-testid="create-thread-button"
+            >
+              +
+            </button>
           </TabsList>
         </Tabs>
-
-        <button
-          onClick={handleOpenCreateModal}
-          aria-label="Utwórz nowy wątek"
-          className="h-11 w-11 rounded-full flex-shrink-0 flex items-center justify-center font-bold text-xl transition-all duration-200 shadow-md hover:shadow-lg"
-          style={{
-            backgroundColor: semanticColors.primary,
-            color: semanticColors.textOnPrimary,
-          }}
-          onMouseEnter={(e) => {
-            e.currentTarget.style.backgroundColor = semanticColors.primaryHover;
-            e.currentTarget.style.transform = "scale(1.05)";
-          }}
-          onMouseLeave={(e) => {
-            e.currentTarget.style.backgroundColor = semanticColors.primary;
-            e.currentTarget.style.transform = "scale(1)";
-          }}
-          data-testid="create-thread-button"
-        >
-          +
-        </button>
 
         <button
           onClick={handleLogout}
