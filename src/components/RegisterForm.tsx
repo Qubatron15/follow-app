@@ -73,9 +73,7 @@ export default function RegisterForm() {
     }
   };
 
-  const handleChange = (field: keyof RegisterFormData) => (
-    e: React.ChangeEvent<HTMLInputElement>
-  ) => {
+  const handleChange = (field: keyof RegisterFormData) => (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData((prev) => ({ ...prev, [field]: e.target.value }));
     // Clear error for this field when user starts typing
     if (errors[field]) {
@@ -87,10 +85,7 @@ export default function RegisterForm() {
     <div className="space-y-6">
       {/* Header */}
       <div className="text-center">
-        <h1
-          className="text-3xl font-bold mb-2"
-          style={{ color: semanticColors.textPrimary }}
-        >
+        <h1 className="text-3xl font-bold mb-2" style={{ color: semanticColors.textPrimary }}>
           Rejestracja
         </h1>
         <p className="text-sm" style={{ color: semanticColors.textSecondary }}>
@@ -181,11 +176,7 @@ export default function RegisterForm() {
       <div className="text-center">
         <p className="text-sm" style={{ color: semanticColors.textSecondary }}>
           Masz już konto?{" "}
-          <a
-            href="/login"
-            className="font-medium hover:underline"
-            style={{ color: semanticColors.primary }}
-          >
+          <a href="/login" className="font-medium hover:underline" style={{ color: semanticColors.primary }}>
             Zaloguj się
           </a>
         </p>

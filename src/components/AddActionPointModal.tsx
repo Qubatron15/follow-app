@@ -70,10 +70,7 @@ export default function AddActionPointModal({ threadId, isOpen, onClose, onSucce
       >
         {/* Header */}
         <div className="flex items-center justify-between mb-5">
-          <h2
-            className="text-2xl font-bold"
-            style={{ color: semanticColors.textPrimary }}
-          >
+          <h2 className="text-2xl font-bold" style={{ color: semanticColors.textPrimary }}>
             Dodaj Action Point
           </h2>
           <button
@@ -130,10 +127,7 @@ export default function AddActionPointModal({ threadId, isOpen, onClose, onSucce
               disabled={isCreating}
               required
             />
-            <p
-              className="text-xs font-medium mt-2"
-              style={{ color: semanticColors.textMuted }}
-            >
+            <p className="text-xs font-medium mt-2" style={{ color: semanticColors.textMuted }}>
               {title.length}/255 znaków
             </p>
           </div>

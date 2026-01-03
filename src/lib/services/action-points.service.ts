@@ -139,7 +139,7 @@ export class ActionPointsService {
     userId: string,
     threadId: string,
     title: string,
-    isCompleted: boolean = false
+    isCompleted = false
   ): Promise<ActionPointDTO> {
     try {
       // Step 1: Verify thread exists and belongs to user (BOLA protection)
@@ -327,11 +327,7 @@ export class ActionPointsService {
    * @returns Promise<void>
    * @throws ActionPointServiceError - For ownership violations or database errors
    */
-  async remove(
-    supabase: SupabaseClient,
-    userId: string,
-    apId: string
-  ): Promise<void> {
+  async remove(supabase: SupabaseClient, userId: string, apId: string): Promise<void> {
     try {
       // Step 1: Verify action point exists and belongs to user's thread (BOLA protection)
       const { data: actionPoint, error: fetchError } = await supabase
@@ -368,10 +364,7 @@ export class ActionPointsService {
       }
 
       // Step 3: Delete the action point
-      const { error: deleteError } = await supabase
-        .from("action_points")
-        .delete()
-        .eq("id", apId);
+      const { error: deleteError } = await supabase.from("action_points").delete().eq("id", apId);
 
       if (deleteError) {
         console.error("Error deleting action point:", deleteError);

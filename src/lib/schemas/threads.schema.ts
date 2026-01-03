@@ -6,7 +6,7 @@ import { z } from "zod";
  */
 export const THREAD_ERRORS = {
   THREAD_NAME_INVALID: "THREAD_NAME_INVALID",
-  THREAD_NAME_DUPLICATE: "THREAD_NAME_DUPLICATE", 
+  THREAD_NAME_DUPLICATE: "THREAD_NAME_DUPLICATE",
   THREAD_LIMIT_REACHED: "THREAD_LIMIT_REACHED",
   THREAD_NOT_FOUND: "THREAD_NOT_FOUND",
   AUTH_REQUIRED: "AUTH_REQUIRED",
@@ -18,15 +18,11 @@ export const THREAD_ERRORS = {
  * Validates that the thread name is:
  * - Non-empty after trimming whitespace
  * - Maximum 20 characters long
- * 
+ *
  * The schema automatically trims whitespace to prevent XSS and ensure clean data.
  */
 export const createThreadSchema = z.object({
-  name: z
-    .string()
-    .trim()
-    .min(1, THREAD_ERRORS.THREAD_NAME_INVALID)
-    .max(20, THREAD_ERRORS.THREAD_NAME_INVALID),
+  name: z.string().trim().min(1, THREAD_ERRORS.THREAD_NAME_INVALID).max(20, THREAD_ERRORS.THREAD_NAME_INVALID),
 });
 
 /**
@@ -39,15 +35,11 @@ export type CreateThreadInput = z.infer<typeof createThreadSchema>;
  * Validates that the thread name is:
  * - Non-empty after trimming whitespace
  * - Maximum 20 characters long
- * 
+ *
  * The schema automatically trims whitespace to prevent XSS and ensure clean data.
  */
 export const updateThreadSchema = z.object({
-  name: z
-    .string()
-    .trim()
-    .min(1, THREAD_ERRORS.THREAD_NAME_INVALID)
-    .max(20, THREAD_ERRORS.THREAD_NAME_INVALID),
+  name: z.string().trim().min(1, THREAD_ERRORS.THREAD_NAME_INVALID).max(20, THREAD_ERRORS.THREAD_NAME_INVALID),
 });
 
 /**

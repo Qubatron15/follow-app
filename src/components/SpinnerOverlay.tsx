@@ -11,10 +11,7 @@ interface SpinnerOverlayProps {
  * SpinnerOverlay component - Full-screen loading overlay with spinner.
  * Rendered in a portal to overlay the entire application.
  */
-export default function SpinnerOverlay({
-  visible,
-  label = "Ładowanie...",
-}: SpinnerOverlayProps) {
+export default function SpinnerOverlay({ visible, label = "Ładowanie..." }: SpinnerOverlayProps) {
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
@@ -45,10 +42,7 @@ export default function SpinnerOverlay({
             borderTopColor: semanticColors.primary,
           }}
         ></div>
-        <p
-          className="text-lg font-bold"
-          style={{ color: semanticColors.textPrimary }}
-        >
+        <p className="text-lg font-bold" style={{ color: semanticColors.textPrimary }}>
           {label}
         </p>
       </div>

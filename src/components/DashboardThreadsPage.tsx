@@ -136,7 +136,7 @@ function DashboardThreadsContent() {
       // Update the draft with the saved transcript ID and mark as clean
       updateTranscriptDraft(savedTranscript.content, savedTranscript.id);
       markTranscriptClean();
-      
+
       // Refresh transcripts list
       await refetchTranscripts();
 
@@ -167,10 +167,7 @@ function DashboardThreadsContent() {
               borderTopColor: semanticColors.primary,
             }}
           ></div>
-          <p
-            className="text-lg font-medium"
-            style={{ color: semanticColors.textSecondary }}
-          >
+          <p className="text-lg font-medium" style={{ color: semanticColors.textSecondary }}>
             Ładowanie wątków...
           </p>
         </div>
@@ -189,16 +186,10 @@ function DashboardThreadsContent() {
           style={{ backgroundColor: semanticColors.backgroundElevated }}
         >
           <div className="text-6xl mb-6">⚠️</div>
-          <h2
-            className="text-2xl font-bold mb-3"
-            style={{ color: semanticColors.textPrimary }}
-          >
+          <h2 className="text-2xl font-bold mb-3" style={{ color: semanticColors.textPrimary }}>
             Wystąpił błąd
           </h2>
-          <p
-            className="text-base mb-6 leading-relaxed"
-            style={{ color: semanticColors.textSecondary }}
-          >
+          <p className="text-base mb-6 leading-relaxed" style={{ color: semanticColors.textSecondary }}>
             {error}
           </p>
           <button
@@ -223,16 +214,10 @@ function DashboardThreadsContent() {
   }
 
   const isGenerateDisabled =
-    !transcriptDraft.isDirty ||
-    transcriptDraft.content.length === 0 ||
-    transcriptDraft.content.length > 30000;
+    !transcriptDraft.isDirty || transcriptDraft.content.length === 0 || transcriptDraft.content.length > 30000;
 
   return (
-    <main
-      className="flex flex-col h-screen"
-      role="main"
-      style={{ backgroundColor: semanticColors.background }}
-    >
+    <main className="flex flex-col h-screen" role="main" style={{ backgroundColor: semanticColors.background }}>
       <ThreadTabs
         threads={threads}
         activeThreadId={activeThreadId}
@@ -249,22 +234,14 @@ function DashboardThreadsContent() {
             style={{ backgroundColor: semanticColors.backgroundElevated }}
           >
             <div className="text-7xl mb-6">📝</div>
-            <h2
-              className="text-2xl font-bold mb-4"
-              style={{ color: semanticColors.textPrimary }}
-            >
+            <h2 className="text-2xl font-bold mb-4" style={{ color: semanticColors.textPrimary }}>
               Brak wątków
             </h2>
-            <p
-              className="text-base mb-3 leading-relaxed"
-              style={{ color: semanticColors.textSecondary }}
-            >
-              Utwórz swój pierwszy wątek, aby rozpocząć zarządzanie transkrypcjami i action
-              points.
+            <p className="text-base mb-3 leading-relaxed" style={{ color: semanticColors.textSecondary }}>
+              Utwórz swój pierwszy wątek, aby rozpocząć zarządzanie transkrypcjami i action points.
             </p>
             <p className="text-sm" style={{ color: semanticColors.textMuted }}>
-              Kliknij przycisk <span className="font-semibold">+</span> powyżej, aby utworzyć
-              nowy wątek.
+              Kliknij przycisk <span className="font-semibold">+</span> powyżej, aby utworzyć nowy wątek.
             </p>
           </div>
         </div>
@@ -274,14 +251,8 @@ function DashboardThreadsContent() {
           <div className="flex-1 overflow-hidden flex flex-col lg:flex-row gap-6 p-6 md:p-8">
             {/* Left side: Transcript */}
             <div className="flex-1 flex flex-col overflow-hidden">
-              <div
-                className="mb-3 pb-2"
-                style={{ borderBottom: `2px solid ${semanticColors.primary}` }}
-              >
-                <h2
-                  className="text-xl font-bold"
-                  style={{ color: semanticColors.textPrimary }}
-                >
+              <div className="mb-3 pb-2" style={{ borderBottom: `2px solid ${semanticColors.primary}` }}>
+                <h2 className="text-xl font-bold" style={{ color: semanticColors.textPrimary }}>
                   Transkrypcja
                 </h2>
               </div>
@@ -310,10 +281,7 @@ function DashboardThreadsContent() {
                   backgroundColor: semanticColors.backgroundSubtle,
                 }}
               >
-                <h2
-                  className="text-xl font-bold"
-                  style={{ color: semanticColors.textPrimary }}
-                >
+                <h2 className="text-xl font-bold" style={{ color: semanticColors.textPrimary }}>
                   Action Points
                 </h2>
                 <button
@@ -366,16 +334,10 @@ function DashboardThreadsContent() {
             style={{ backgroundColor: semanticColors.backgroundElevated }}
           >
             <div className="text-7xl mb-6">👆</div>
-            <h2
-              className="text-2xl font-bold mb-4"
-              style={{ color: semanticColors.textPrimary }}
-            >
+            <h2 className="text-2xl font-bold mb-4" style={{ color: semanticColors.textPrimary }}>
               Wybierz wątek
             </h2>
-            <p
-              className="text-base leading-relaxed"
-              style={{ color: semanticColors.textSecondary }}
-            >
+            <p className="text-base leading-relaxed" style={{ color: semanticColors.textSecondary }}>
               Wybierz jeden z wątków z zakładek powyżej, aby rozpocząć pracę z transkrypcją.
             </p>
           </div>

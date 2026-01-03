@@ -37,20 +37,13 @@ export default function EmptyState({ onCreateThread }: EmptyStateProps) {
         <h1 className="text-2xl font-bold mb-3">Witaj w FollowApp!</h1>
 
         {/* Description */}
-        <p
-          className="text-muted-foreground mb-8"
-          id="empty-state-description"
-        >
-          Tworzenie wątków pomoże Ci organizować rozmowy i śledzić ważne punkty akcji. 
-          Zacznij od utworzenia swojego pierwszego wątku.
+        <p className="text-muted-foreground mb-8" id="empty-state-description">
+          Tworzenie wątków pomoże Ci organizować rozmowy i śledzić ważne punkty akcji. Zacznij od utworzenia swojego
+          pierwszego wątku.
         </p>
 
         {/* CTA Button */}
-        <Button
-          onClick={onCreateThread}
-          size="lg"
-          aria-describedby="empty-state-description"
-        >
+        <Button onClick={onCreateThread} size="lg" aria-describedby="empty-state-description">
           Nowy wątek
         </Button>
       </div>

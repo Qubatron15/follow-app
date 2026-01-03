@@ -57,7 +57,7 @@ export function ThreadsProvider({ children }: ThreadsProviderProps) {
   /**
    * Updates transcript content and optionally marks it as dirty
    */
-  const updateTranscriptDraft = useCallback((content: string, transcriptId?: string | null, markDirty: boolean = true) => {
+  const updateTranscriptDraft = useCallback((content: string, transcriptId?: string | null, markDirty = true) => {
     setTranscriptDraft((prev) => ({
       ...prev,
       content,
@@ -113,11 +113,7 @@ export function ThreadsProvider({ children }: ThreadsProviderProps) {
     setError,
   };
 
-  return (
-    <ThreadsContext.Provider value={value}>
-      {children}
-    </ThreadsContext.Provider>
-  );
+  return <ThreadsContext.Provider value={value}>{children}</ThreadsContext.Provider>;
 }
 
 /**
@@ -126,10 +122,10 @@ export function ThreadsProvider({ children }: ThreadsProviderProps) {
  */
 export function useThreadsContext(): ThreadsContextValue {
   const context = useContext(ThreadsContext);
-  
+
   if (context === undefined) {
     throw new Error("useThreadsContext must be used within ThreadsProvider");
   }
-  
+
   return context;
 }

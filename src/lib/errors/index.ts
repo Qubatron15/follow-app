@@ -32,7 +32,7 @@ const ERROR_STATUS_MAP: Record<string, number> = {
 
 /**
  * Creates a standardized error response object.
- * 
+ *
  * @param code - Application-specific error code
  * @param message - Human-readable error message
  * @returns ErrorResponse object with consistent structure
@@ -76,22 +76,19 @@ export function mapServiceErrorToHttpResponse(
 /**
  * Creates a generic internal server error response.
  * Used as fallback for unexpected errors.
- * 
+ *
  * @param message - Optional custom error message
  * @param requestId - Optional request ID for logging correlation
  * @returns HTTP Response with 500 status
  */
 export function createInternalServerErrorResponse(
-  message: string = "An unexpected error occurred",
+  message = "An unexpected error occurred",
   requestId?: string
 ): Response {
   const logPrefix = requestId ? `[${requestId}]` : "";
   console.error(`${logPrefix} Internal server error:`, message);
 
-  const errorResponse = createErrorResponse(
-    THREAD_ERRORS.INTERNAL_SERVER_ERROR,
-    message
-  );
+  const errorResponse = createErrorResponse(THREAD_ERRORS.INTERNAL_SERVER_ERROR, message);
 
   return new Response(JSON.stringify(errorResponse), {
     status: 500,
@@ -104,13 +101,11 @@ export function createInternalServerErrorResponse(
 /**
  * Creates an authentication required error response.
  * Used when user authentication is missing or invalid.
- * 
+ *
  * @param message - Optional custom error message
  * @returns HTTP Response with 401 status
  */
-export function createAuthRequiredResponse(
-  message: string = "Authentication required"
-): Response {
+export function createAuthRequiredResponse(message = "Authentication required"): Response {
   const errorResponse = createErrorResponse(THREAD_ERRORS.AUTH_REQUIRED, message);
 
   return new Response(JSON.stringify(errorResponse), {
@@ -124,13 +119,11 @@ export function createAuthRequiredResponse(
 /**
  * Creates a validation error response for invalid input data.
  * Used when request data fails validation.
- * 
+ *
  * @param message - Specific validation error message
  * @returns HTTP Response with 400 status
  */
-export function createValidationErrorResponse(
-  message: string = "Invalid input data"
-): Response {
+export function createValidationErrorResponse(message = "Invalid input data"): Response {
   const errorResponse = createErrorResponse(THREAD_ERRORS.THREAD_NAME_INVALID, message);
 
   return new Response(JSON.stringify(errorResponse), {

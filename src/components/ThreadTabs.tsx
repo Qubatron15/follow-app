@@ -125,11 +125,7 @@ export default function ThreadTabs({
       }}
     >
       <div className="flex items-center gap-3 px-6 md:px-8 max-w-7xl mx-auto">
-        <Tabs
-          value={activeThreadId || undefined}
-          onValueChange={onSelect}
-          className="flex-1 overflow-x-auto"
-        >
+        <Tabs value={activeThreadId || undefined} onValueChange={onSelect} className="flex-1 overflow-x-auto">
           <TabsList
             className="h-16 bg-transparent border-b-0 justify-start w-full gap-1"
             style={{ backgroundColor: "transparent" }}
@@ -140,18 +136,10 @@ export default function ThreadTabs({
                   value={thread.id}
                   className="rounded-t-lg px-5 py-3 text-sm font-semibold transition-all duration-200 pr-11 data-[state=inactive]:hover:bg-opacity-50"
                   style={{
-                    color:
-                      activeThreadId === thread.id
-                        ? semanticColors.primary
-                        : semanticColors.textSecondary,
-                    backgroundColor:
-                      activeThreadId === thread.id
-                        ? semanticColors.backgroundSubtle
-                        : "transparent",
+                    color: activeThreadId === thread.id ? semanticColors.primary : semanticColors.textSecondary,
+                    backgroundColor: activeThreadId === thread.id ? semanticColors.backgroundSubtle : "transparent",
                     borderBottom:
-                      activeThreadId === thread.id
-                        ? `3px solid ${semanticColors.primary}`
-                        : "3px solid transparent",
+                      activeThreadId === thread.id ? `3px solid ${semanticColors.primary}` : "3px solid transparent",
                   }}
                   onMouseEnter={(e) => {
                     if (activeThreadId !== thread.id) {
@@ -185,9 +173,7 @@ export default function ThreadTabs({
                     </Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end">
-                    <DropdownMenuItem onClick={(e) => handleOpenEditModal(thread, e)}>
-                      ✏️ Edytuj nazwę
-                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={(e) => handleOpenEditModal(thread, e)}>✏️ Edytuj nazwę</DropdownMenuItem>
                     <DropdownMenuItem
                       onClick={(e) => handleOpenDeleteDialog(thread, e)}
                       className="text-destructive focus:text-destructive"

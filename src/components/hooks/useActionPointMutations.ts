@@ -26,7 +26,7 @@ export function useActionPointMutations(): UseActionPointMutationsResult {
   }, []);
 
   const createActionPoint = useCallback(
-    async (threadId: string, title: string, isCompleted: boolean = false): Promise<ActionPointDTO | null> => {
+    async (threadId: string, title: string, isCompleted = false): Promise<ActionPointDTO | null> => {
       setIsCreating(true);
       setError(null);
 

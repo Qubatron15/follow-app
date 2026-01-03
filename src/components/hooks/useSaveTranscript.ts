@@ -2,11 +2,7 @@ import { useState, useCallback } from "react";
 import type { TranscriptDTO, CreateTranscriptCommand, UpdateTranscriptCommand } from "@/types";
 
 interface UseSaveTranscriptResult {
-  saveTranscript: (
-    threadId: string,
-    content: string,
-    existingTranscriptId?: string
-  ) => Promise<TranscriptDTO | null>;
+  saveTranscript: (threadId: string, content: string, existingTranscriptId?: string) => Promise<TranscriptDTO | null>;
   isSaving: boolean;
   error: string | null;
   clearError: () => void;
@@ -25,11 +21,7 @@ export function useSaveTranscript(): UseSaveTranscriptResult {
   }, []);
 
   const saveTranscript = useCallback(
-    async (
-      threadId: string,
-      content: string,
-      existingTranscriptId?: string
-    ): Promise<TranscriptDTO | null> => {
+    async (threadId: string, content: string, existingTranscriptId?: string): Promise<TranscriptDTO | null> => {
       setIsSaving(true);
       setError(null);
 

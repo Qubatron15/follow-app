@@ -25,7 +25,7 @@ export default function TextareaTranscript({
   const currentLength = value.length;
   const remainingChars = maxLength - currentLength;
   const percentUsed = (currentLength / maxLength) * 100;
-  
+
   // Change color when over 95% of limit
   const isNearLimit = percentUsed >= 95;
   const isOverLimit = currentLength > maxLength;
@@ -41,24 +41,14 @@ export default function TextareaTranscript({
           id={counterId}
           className="text-xs font-medium px-3 py-1.5 rounded-full"
           style={{
-            backgroundColor: isOverLimit
-              ? "#fee2e2"
-              : isNearLimit
-              ? "#fef3c7"
-              : semanticColors.backgroundSubtle,
-            color: isOverLimit
-              ? semanticColors.error
-              : isNearLimit
-              ? "#d97706"
-              : semanticColors.textSecondary,
+            backgroundColor: isOverLimit ? "#fee2e2" : isNearLimit ? "#fef3c7" : semanticColors.backgroundSubtle,
+            color: isOverLimit ? semanticColors.error : isNearLimit ? "#d97706" : semanticColors.textSecondary,
           }}
           aria-live="polite"
         >
           {currentLength.toLocaleString("pl-PL")} / {maxLength.toLocaleString("pl-PL")} znaków
           {isOverLimit && (
-            <span className="ml-2 font-bold">
-              (przekroczono o {Math.abs(remainingChars).toLocaleString("pl-PL")})
-            </span>
+            <span className="ml-2 font-bold">(przekroczono o {Math.abs(remainingChars).toLocaleString("pl-PL")})</span>
           )}
         </span>
       </div>
@@ -97,8 +87,7 @@ export default function TextareaTranscript({
         >
           <span className="text-lg">⚠️</span>
           <span>
-            Transkrypcja przekracza maksymalną długość. Usuń{" "}
-            {Math.abs(remainingChars).toLocaleString("pl-PL")} znaków.
+            Transkrypcja przekracza maksymalną długość. Usuń {Math.abs(remainingChars).toLocaleString("pl-PL")} znaków.
           </span>
         </div>
       )}

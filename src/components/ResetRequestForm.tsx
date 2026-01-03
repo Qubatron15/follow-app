@@ -35,10 +35,10 @@ export default function ResetRequestForm() {
     try {
       // TODO: Implement actual password reset logic with Supabase
       // For now, just show a placeholder message
-      
+
       // Simulate API call
       await new Promise((resolve) => setTimeout(resolve, 1500));
-      
+
       console.log("Password reset request for:", formData.email);
 
       setIsSuccess(true);
@@ -54,9 +54,7 @@ export default function ResetRequestForm() {
     }
   };
 
-  const handleChange = (field: keyof ResetRequestFormData) => (
-    e: React.ChangeEvent<HTMLInputElement>
-  ) => {
+  const handleChange = (field: keyof ResetRequestFormData) => (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData((prev) => ({ ...prev, [field]: e.target.value }));
     // Clear error for this field when user starts typing
     if (errors[field]) {
@@ -68,25 +66,17 @@ export default function ResetRequestForm() {
     return (
       <div className="space-y-6 text-center">
         <div className="text-6xl mb-4">📧</div>
-        <h1
-          className="text-3xl font-bold mb-2"
-          style={{ color: semanticColors.textPrimary }}
-        >
+        <h1 className="text-3xl font-bold mb-2" style={{ color: semanticColors.textPrimary }}>
           Sprawdź swoją skrzynkę
         </h1>
         <p className="text-base leading-relaxed" style={{ color: semanticColors.textSecondary }}>
-          Jeśli konto z adresem <strong>{formData.email}</strong> istnieje, wysłaliśmy na nie link
-          do resetowania hasła.
+          Jeśli konto z adresem <strong>{formData.email}</strong> istnieje, wysłaliśmy na nie link do resetowania hasła.
         </p>
         <p className="text-sm" style={{ color: semanticColors.textMuted }}>
           Link będzie ważny przez 24 godziny.
         </p>
         <div className="pt-4">
-          <a
-            href="/login"
-            className="text-sm font-medium hover:underline"
-            style={{ color: semanticColors.primary }}
-          >
+          <a href="/login" className="text-sm font-medium hover:underline" style={{ color: semanticColors.primary }}>
             Wróć do logowania
           </a>
         </div>
@@ -98,10 +88,7 @@ export default function ResetRequestForm() {
     <div className="space-y-6">
       {/* Header */}
       <div className="text-center">
-        <h1
-          className="text-3xl font-bold mb-2"
-          style={{ color: semanticColors.textPrimary }}
-        >
+        <h1 className="text-3xl font-bold mb-2" style={{ color: semanticColors.textPrimary }}>
           Resetowanie hasła
         </h1>
         <p className="text-sm" style={{ color: semanticColors.textSecondary }}>
@@ -147,11 +134,7 @@ export default function ResetRequestForm() {
 
       {/* Back to login link */}
       <div className="text-center">
-        <a
-          href="/login"
-          className="text-sm font-medium hover:underline"
-          style={{ color: semanticColors.primary }}
-        >
+        <a href="/login" className="text-sm font-medium hover:underline" style={{ color: semanticColors.primary }}>
           Wróć do logowania
         </a>
       </div>

@@ -22,12 +22,7 @@ interface DeleteThreadDialogProps {
  * DeleteThreadDialog component - Confirmation dialog for deleting a thread.
  * Shows warning about permanent deletion and handles the delete operation.
  */
-export default function DeleteThreadDialog({
-  isOpen,
-  onClose,
-  thread,
-  onThreadDeleted,
-}: DeleteThreadDialogProps) {
+export default function DeleteThreadDialog({ isOpen, onClose, thread, onThreadDeleted }: DeleteThreadDialogProps) {
   const { deleteThread, isDeleting } = useDeleteThread();
 
   const handleConfirmDelete = async () => {
@@ -54,18 +49,14 @@ export default function DeleteThreadDialog({
           <AlertDialogTitle>Czy na pewno chcesz usunąć ten wątek?</AlertDialogTitle>
           <AlertDialogDescription className="space-y-2">
             <p>
-              Ta akcja jest <span className="font-semibold text-destructive">nieodwracalna</span>. 
-              Wątek <span className="font-semibold">&quot;{thread?.name}&quot;</span> zostanie trwale usunięty.
+              Ta akcja jest <span className="font-semibold text-destructive">nieodwracalna</span>. Wątek{" "}
+              <span className="font-semibold">&quot;{thread?.name}&quot;</span> zostanie trwale usunięty.
             </p>
-            <p className="text-sm">
-              Wszystkie powiązane transkrypcje i action points również zostaną usunięte.
-            </p>
+            <p className="text-sm">Wszystkie powiązane transkrypcje i action points również zostaną usunięte.</p>
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
-          <AlertDialogCancel disabled={isDeleting}>
-            Anuluj
-          </AlertDialogCancel>
+          <AlertDialogCancel disabled={isDeleting}>Anuluj</AlertDialogCancel>
           <AlertDialogAction
             onClick={handleConfirmDelete}
             disabled={isDeleting}

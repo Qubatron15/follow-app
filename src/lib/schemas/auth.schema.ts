@@ -19,10 +19,7 @@ export const passwordSchema = z
   .min(8, "Hasło musi mieć co najmniej 8 znaków")
   .regex(/[A-Z]/, "Hasło musi zawierać co najmniej jedną wielką literę")
   .regex(/[0-9]/, "Hasło musi zawierać co najmniej jedną cyfrę")
-  .regex(
-    /[!@#$%^&*(),.?":{}|<>]/,
-    "Hasło musi zawierać co najmniej jeden znak specjalny"
-  );
+  .regex(/[!@#$%^&*(),.?":{}|<>]/, "Hasło musi zawierać co najmniej jeden znak specjalny");
 
 /**
  * Login form schema

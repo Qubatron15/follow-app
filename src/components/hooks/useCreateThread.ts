@@ -45,7 +45,7 @@ export function useCreateThread(): UseCreateThreadResult {
 
         // Parse error response
         const errorData: ErrorResponse = await response.json();
-        
+
         // Map error codes to user-friendly messages
         const errorMessage = getErrorMessage(errorData.error.code, errorData.error.message);
         setError(errorMessage);

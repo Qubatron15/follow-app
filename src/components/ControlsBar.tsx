@@ -11,12 +11,7 @@ interface ControlsBarProps {
  * ControlsBar component - Control panel with generate button and status info.
  * Displays transcript status and action buttons.
  */
-export default function ControlsBar({
-  disabled,
-  onGenerate,
-  transcriptLength,
-  isDirty,
-}: ControlsBarProps) {
+export default function ControlsBar({ disabled, onGenerate, transcriptLength, isDirty }: ControlsBarProps) {
   return (
     <div
       className="px-6 md:px-8 py-5 sticky bottom-0 shadow-2xl"
@@ -36,17 +31,11 @@ export default function ControlsBar({
           >
             <span className="font-semibold">Status:</span>{" "}
             {isDirty ? (
-              <span
-                className="font-bold"
-                style={{ color: "#f59e0b" }}
-              >
+              <span className="font-bold" style={{ color: "#f59e0b" }}>
                 Niezapisane zmiany
               </span>
             ) : transcriptLength > 0 ? (
-              <span
-                className="font-bold"
-                style={{ color: semanticColors.success }}
-              >
+              <span className="font-bold" style={{ color: semanticColors.success }}>
                 Zapisano
               </span>
             ) : (

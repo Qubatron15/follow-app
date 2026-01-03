@@ -24,28 +24,24 @@ interface CreateThreadModalProps {
  * CreateThreadModal component - Modal for creating a new thread.
  * Includes form validation and error handling.
  */
-export default function CreateThreadModal({
-  isOpen,
-  onClose,
-  onThreadCreated,
-}: CreateThreadModalProps) {
+export default function CreateThreadModal({ isOpen, onClose, onThreadCreated }: CreateThreadModalProps) {
   const [name, setName] = useState("");
   const [validationError, setValidationError] = useState<string | null>(null);
   const { createThread, isCreating, error: apiError, clearError } = useCreateThread();
-  
+
   const nameInputId = useId();
   const errorId = useId();
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    
+
     // Clear previous errors
     setValidationError(null);
     clearError();
 
     // Client-side validation
     const trimmedName = name.trim();
-    
+
     if (trimmedName.length === 0) {
       setValidationError("Nazwa wątku nie może być pusta");
       return;
@@ -90,9 +86,7 @@ export default function CreateThreadModal({
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
           <DialogTitle>Utwórz nowy wątek</DialogTitle>
-          <DialogDescription>
-            Nadaj nazwę swojemu wątkowi. Możesz ją później zmienić.
-          </DialogDescription>
+          <DialogDescription>Nadaj nazwę swojemu wątkowi. Możesz ją później zmienić.</DialogDescription>
         </DialogHeader>
 
         <form onSubmit={handleSubmit}>
@@ -100,7 +94,9 @@ export default function CreateThreadModal({
             <div className="grid gap-2">
               <Label htmlFor={nameInputId}>
                 Nazwa wątku
-                <span className="text-destructive ml-1" aria-label="wymagane">*</span>
+                <span className="text-destructive ml-1" aria-label="wymagane">
+                  *
+                </span>
               </Label>
               <Input
                 id={nameInputId}
@@ -114,14 +110,9 @@ export default function CreateThreadModal({
                 disabled={isCreating}
                 autoFocus
               />
-              
+
               {/* Character counter */}
-              <p
-                className={`text-xs ${
-                  isOverLimit ? "text-destructive" : "text-muted-foreground"
-                }`}
-                aria-live="polite"
-              >
+              <p className={`text-xs ${isOverLimit ? "text-destructive" : "text-muted-foreground"}`} aria-live="polite">
                 {remainingChars >= 0
                   ? `Pozostało ${remainingChars} znaków`
                   : `Przekroczono limit o ${Math.abs(remainingChars)} znaków`}
@@ -129,11 +120,7 @@ export default function CreateThreadModal({
 
               {/* Error message */}
               {displayError && (
-                <p
-                  id={errorId}
-                  className="text-sm text-destructive"
-                  role="alert"
-                >
+                <p id={errorId} className="text-sm text-destructive" role="alert">
                   {displayError}
                 </p>
               )}
@@ -141,18 +128,10 @@ export default function CreateThreadModal({
           </div>
 
           <DialogFooter>
-            <Button
-              type="button"
-              variant="outline"
-              onClick={handleClose}
-              disabled={isCreating}
-            >
+            <Button type="button" variant="outline" onClick={handleClose} disabled={isCreating}>
               Anuluj
             </Button>
-            <Button
-              type="submit"
-              disabled={isCreating || name.trim().length === 0 || isOverLimit}
-            >
+            <Button type="submit" disabled={isCreating || name.trim().length === 0 || isOverLimit}>
               {isCreating ? "Tworzenie..." : "Utwórz wątek"}
             </Button>
           </DialogFooter>

@@ -81,11 +81,7 @@ export class TranscriptsService {
 
       if (fetchError) {
         console.error("Error fetching transcripts:", fetchError);
-        throw new TranscriptServiceError(
-          TRANSCRIPT_ERRORS.INTERNAL_SERVER_ERROR,
-          "Failed to fetch transcripts",
-          500
-        );
+        throw new TranscriptServiceError(TRANSCRIPT_ERRORS.INTERNAL_SERVER_ERROR, "Failed to fetch transcripts", 500);
       }
 
       // Step 3: Return transcripts as DTOs
@@ -117,12 +113,7 @@ export class TranscriptsService {
    * @returns Promise<TranscriptDTO> - The created transcript data
    * @throws TranscriptServiceError - For ownership violations or database errors
    */
-  async create(
-    supabase: SupabaseClient,
-    userId: string,
-    threadId: string,
-    content: string
-  ): Promise<TranscriptDTO> {
+  async create(supabase: SupabaseClient, userId: string, threadId: string, content: string): Promise<TranscriptDTO> {
     try {
       // Step 1: Verify thread exists and belongs to user
       const { data: thread, error: threadError } = await supabase
@@ -161,11 +152,7 @@ export class TranscriptsService {
 
       if (insertError) {
         console.error("Error creating transcript:", insertError);
-        throw new TranscriptServiceError(
-          TRANSCRIPT_ERRORS.INTERNAL_SERVER_ERROR,
-          "Failed to create transcript",
-          500
-        );
+        throw new TranscriptServiceError(TRANSCRIPT_ERRORS.INTERNAL_SERVER_ERROR, "Failed to create transcript", 500);
       }
 
       if (!newTranscript) {
@@ -204,11 +191,7 @@ export class TranscriptsService {
    * @returns Promise<TranscriptDTO> - The transcript data
    * @throws TranscriptServiceError - For ownership violations or database errors
    */
-  async get(
-    supabase: SupabaseClient,
-    userId: string,
-    transcriptId: string
-  ): Promise<TranscriptDTO> {
+  async get(supabase: SupabaseClient, userId: string, transcriptId: string): Promise<TranscriptDTO> {
     try {
       // Step 1: Fetch transcript with thread ownership verification
       const { data: transcript, error: fetchError } = await supabase
@@ -219,11 +202,7 @@ export class TranscriptsService {
 
       if (fetchError) {
         console.error("Error fetching transcript:", fetchError);
-        throw new TranscriptServiceError(
-          TRANSCRIPT_ERRORS.INTERNAL_SERVER_ERROR,
-          "Failed to fetch transcript",
-          500
-        );
+        throw new TranscriptServiceError(TRANSCRIPT_ERRORS.INTERNAL_SERVER_ERROR, "Failed to fetch transcript", 500);
       }
 
       if (!transcript) {
@@ -324,11 +303,7 @@ export class TranscriptsService {
 
       if (updateError) {
         console.error("Error updating transcript:", updateError);
-        throw new TranscriptServiceError(
-          TRANSCRIPT_ERRORS.INTERNAL_SERVER_ERROR,
-          "Failed to update transcript",
-          500
-        );
+        throw new TranscriptServiceError(TRANSCRIPT_ERRORS.INTERNAL_SERVER_ERROR, "Failed to update transcript", 500);
       }
 
       if (!updatedTranscript) {
@@ -367,11 +342,7 @@ export class TranscriptsService {
    * @returns Promise<void>
    * @throws TranscriptServiceError - For ownership violations or database errors
    */
-  async remove(
-    supabase: SupabaseClient,
-    userId: string,
-    transcriptId: string
-  ): Promise<void> {
+  async remove(supabase: SupabaseClient, userId: string, transcriptId: string): Promise<void> {
     try {
       // Step 1: Verify transcript exists and belongs to user's thread
       const { data: transcript, error: fetchError } = await supabase
@@ -408,18 +379,11 @@ export class TranscriptsService {
       }
 
       // Step 3: Delete the transcript
-      const { error: deleteError } = await supabase
-        .from("transcripts")
-        .delete()
-        .eq("id", transcriptId);
+      const { error: deleteError } = await supabase.from("transcripts").delete().eq("id", transcriptId);
 
       if (deleteError) {
         console.error("Error deleting transcript:", deleteError);
-        throw new TranscriptServiceError(
-          TRANSCRIPT_ERRORS.INTERNAL_SERVER_ERROR,
-          "Failed to delete transcript",
-          500
-        );
+        throw new TranscriptServiceError(TRANSCRIPT_ERRORS.INTERNAL_SERVER_ERROR, "Failed to delete transcript", 500);
       }
     } catch (error) {
       // Re-throw TranscriptServiceError instances as-is

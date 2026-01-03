@@ -130,7 +130,12 @@ export async function PATCH(context: APIContext): Promise<Response> {
     }
 
     // Step 5: Update transcript using service layer
-    const transcriptData = await transcriptsService.update(supabase, user.id, transcriptId, validationResult.data.content);
+    const transcriptData = await transcriptsService.update(
+      supabase,
+      user.id,
+      transcriptId,
+      validationResult.data.content
+    );
 
     // Step 6: Generate action points using AI based on transcript content
     const threadId = transcriptData.threadId;
