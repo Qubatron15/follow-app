@@ -1,0 +1,14 @@
+---
+import AuthLayout from "@/layouts/AuthLayout.astro";
+import LoginForm from "@/components/LoginForm";
+
+export const prerender = false;
+
+// Get redirect parameter from URL
+const url = new URL(Astro.request.url);
+const redirectTo = url.searchParams.get("redirect") || "/";
+---
+
+<AuthLayout title="FollowApp - Logowanie">
+  <LoginForm client:load redirectTo={redirectTo} />
+</AuthLayout>

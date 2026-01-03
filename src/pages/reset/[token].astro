@@ -1,0 +1,18 @@
+---
+import AuthLayout from "@/layouts/AuthLayout.astro";
+import ResetConfirmForm from "@/components/ResetConfirmForm";
+
+export const prerender = false;
+
+// Get token from URL params
+const { token } = Astro.params;
+
+// Validate token exists
+if (!token) {
+  return Astro.redirect("/reset");
+}
+---
+
+<AuthLayout title="FollowApp - Nowe hasło">
+  <ResetConfirmForm client:load token={token} />
+</AuthLayout>

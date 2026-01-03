@@ -1,0 +1,10 @@
+---
+import AuthLayout from "@/layouts/AuthLayout.astro";
+import RegisterForm from "@/components/RegisterForm";
+
+export const prerender = false;
+---
+
+<AuthLayout title="FollowApp - Rejestracja">
+  <RegisterForm client:load />
+</AuthLayout>

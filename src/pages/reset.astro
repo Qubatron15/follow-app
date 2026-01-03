@@ -1,0 +1,10 @@
+---
+import AuthLayout from "@/layouts/AuthLayout.astro";
+import ResetRequestForm from "@/components/ResetRequestForm";
+
+export const prerender = false;
+---
+
+<AuthLayout title="FollowApp - Resetowanie hasła">
+  <ResetRequestForm client:load />
+</AuthLayout>
