@@ -1,8 +1,12 @@
 ---
-import Welcome from "../components/Welcome.astro";
-import Layout from "../layouts/Layout.astro";
----
+// Redirect to /threads if authenticated, otherwise to /login
+const user = Astro.locals.user;
 
-<Layout>
-  <Welcome />
-</Layout>
+if (user) {
+  return Astro.redirect("/threads");
+} else {
+  return Astro.redirect("/login");
+}
+
+export const prerender = false;
+---

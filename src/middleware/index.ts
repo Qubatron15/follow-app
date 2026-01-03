@@ -3,6 +3,8 @@ import { createSupabaseServerInstance } from "../db/supabase.client";
 
 // Public paths that don't require authentication
 const PUBLIC_PATHS = [
+  // Root path (handles its own redirect logic)
+  "/",
   // Auth pages
   "/login",
   "/register",
