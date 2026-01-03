@@ -1,4 +1,6 @@
 ---
+export const prerender = false;
+
 // Redirect to /threads if authenticated, otherwise to /login
 const user = Astro.locals.user;
 
@@ -7,6 +9,4 @@ if (user) {
 } else {
   return Astro.redirect("/login");
 }
-
-export const prerender = false;
 ---

@@ -1,4 +1,4 @@
-import { Page, Locator } from "@playwright/test";
+import type { Page, Locator } from "@playwright/test";
 
 /**
  * Page Object Model for Dashboard Page
@@ -127,6 +127,15 @@ export class CreateThreadModal {
    * @param name - Thread name
    */
   async fillName(name: string) {
+    // Wait for input to be ready
+    await this.nameInput.waitFor({ state: "visible", timeout: 5000 });
+    await this.page.waitForFunction(
+      () => {
+        const input = document.querySelector('[data-testid="create-thread-name-input"]') as HTMLInputElement;
+        return input && !input.disabled;
+      },
+      { timeout: 5000 }
+    );
     await this.nameInput.fill(name);
   }
 
@@ -252,6 +261,15 @@ export class AddActionPointModal {
    * @param title - Action point title
    */
   async fillTitle(title: string) {
+    // Wait for input to be ready
+    await this.titleInput.waitFor({ state: "visible", timeout: 5000 });
+    await this.page.waitForFunction(
+      () => {
+        const input = document.querySelector('[data-testid="add-action-point-title-input"]') as HTMLTextAreaElement;
+        return input && !input.disabled;
+      },
+      { timeout: 5000 }
+    );
     await this.titleInput.fill(title);
   }
 
