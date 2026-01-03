@@ -3,6 +3,11 @@ import AuthLayout from "@/layouts/AuthLayout.astro";
 import RegisterForm from "@/components/RegisterForm";
 
 export const prerender = false;
+
+// If user is already logged in, redirect to threads
+if (Astro.locals.user) {
+  return Astro.redirect("/threads");
+}
 ---
 
 <AuthLayout title="FollowApp - Rejestracja">

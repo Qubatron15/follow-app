@@ -14,7 +14,6 @@ export default function RegisterForm() {
   });
   const [errors, setErrors] = useState<Partial<Record<keyof RegisterFormData, string>>>({});
   const [isLoading, setIsLoading] = useState(false);
-  const [isSuccess, setIsSuccess] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -35,24 +34,39 @@ export default function RegisterForm() {
     setIsLoading(true);
 
     try {
-      // TODO: Implement actual registration logic with Supabase
-      // For now, just show a placeholder message
-      
-      // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 1500));
-      
-      console.log("Registration attempt:", {
-        email: formData.email,
-        password: "[REDACTED]",
+      // Call register API endpoint
+      const response = await fetch("/api/auth/register", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email: formData.email,
+          password: formData.password,
+          confirmPassword: formData.confirmPassword,
+        }),
       });
 
-      setIsSuccess(true);
+      const data = await response.json();
+
+      if (!response.ok) {
+        // Handle error response
+        toast.error("Błąd rejestracji", {
+          description: data.error?.message || "Nie udało się utworzyć konta. Spróbuj ponownie.",
+        });
+        return;
+      }
+
+      // Success - show toast and redirect to threads
       toast.success("Rejestracja pomyślna", {
-        description: "Sprawdź swoją skrzynkę e-mail, aby aktywować konto.",
+        description: `Witaj, ${data.user.email}!`,
       });
-    } catch (error) {
+
+      // Redirect to threads page
+      window.location.href = "/threads";
+    } catch {
       toast.error("Błąd rejestracji", {
-        description: "Nie udało się utworzyć konta. Spróbuj ponownie.",
+        description: "Nie udało się połączyć z serwerem. Spróbuj ponownie.",
       });
     } finally {
       setIsLoading(false);
@@ -68,33 +82,6 @@ export default function RegisterForm() {
       setErrors((prev) => ({ ...prev, [field]: undefined }));
     }
   };
-
-  if (isSuccess) {
-    return (
-      <div className="space-y-6 text-center">
-        <div className="text-6xl mb-4">✉️</div>
-        <h1
-          className="text-3xl font-bold mb-2"
-          style={{ color: semanticColors.textPrimary }}
-        >
-          Sprawdź swoją skrzynkę
-        </h1>
-        <p className="text-base leading-relaxed" style={{ color: semanticColors.textSecondary }}>
-          Wysłaliśmy link aktywacyjny na adres <strong>{formData.email}</strong>. Kliknij w link,
-          aby aktywować swoje konto.
-        </p>
-        <div className="pt-4">
-          <a
-            href="/login"
-            className="text-sm font-medium hover:underline"
-            style={{ color: semanticColors.primary }}
-          >
-            Wróć do logowania
-          </a>
-        </div>
-      </div>
-    );
-  }
 
   return (
     <div className="space-y-6">
