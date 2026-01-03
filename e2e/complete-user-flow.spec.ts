@@ -41,8 +41,8 @@ test.describe("Complete User Flow: Login → Thread → Action Point → Logout"
       // Fill in credentials and submit
       await loginPage.login(TEST_EMAIL, TEST_PASSWORD);
 
-      // Wait for successful navigation to dashboard
-      await page.waitForURL("/threads", { timeout: 10000 });
+      // Wait for successful navigation to dashboard (longer timeout for HTTPS/production)
+      await page.waitForURL("/threads", { timeout: 30000 });
 
       // Verify we're on the dashboard
       await expect(dashboardPage.createThreadButton).toBeVisible();
