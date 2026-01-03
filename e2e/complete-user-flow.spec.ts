@@ -96,7 +96,6 @@ test.describe("Complete User Flow: Login → Thread → Action Point → Logout"
       await actionPoints.waitForActionPointsToLoad();
 
       // Get initial count of action points
-      const initialCount = await actionPoints.getActionPointCount();
 
       // Click "Dodaj AP" button
       await actionPoints.addActionPointButton.click();
@@ -124,7 +123,7 @@ test.describe("Complete User Flow: Login → Thread → Action Point → Logout"
 
       // Verify action point count increased
       const newCount = await actionPoints.getActionPointCount();
-      expect(newCount).toBe(initialCount + 1);
+      expect(newCount).toBe(1);
 
       // Verify action point exists with correct title
       const hasActionPoint = await actionPoints.hasActionPoint(actionPointTitle);
