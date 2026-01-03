@@ -11,6 +11,7 @@ import CreateThreadModal from "@/components/CreateThreadModal";
 import EditThreadModal from "@/components/EditThreadModal";
 import DeleteThreadDialog from "@/components/DeleteThreadDialog";
 import { semanticColors } from "@/lib/palette";
+import { toast } from "sonner";
 import type { ThreadDTO } from "@/types";
 
 interface ThreadTabsProps {
@@ -38,6 +39,7 @@ export default function ThreadTabs({
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [selectedThread, setSelectedThread] = useState<ThreadDTO | null>(null);
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
 
   const handleOpenCreateModal = () => {
     setIsCreateModalOpen(true);
@@ -82,6 +84,36 @@ export default function ThreadTabs({
   const handleThreadDeleted = (threadId: string) => {
     onThreadDeleted(threadId);
     handleCloseDeleteDialog();
+  };
+
+  const handleLogout = async () => {
+    setIsLoggingOut(true);
+
+    try {
+      const response = await fetch("/api/auth/logout", {
+        method: "POST",
+      });
+
+      if (!response.ok) {
+        toast.error("Błąd wylogowania", {
+          description: "Nie udało się wylogować. Spróbuj ponownie.",
+        });
+        return;
+      }
+
+      toast.success("Wylogowano pomyślnie", {
+        description: "Do zobaczenia!",
+      });
+
+      // Redirect to login page
+      window.location.href = "/login";
+    } catch {
+      toast.error("Błąd wylogowania", {
+        description: "Nie udało się połączyć z serwerem.",
+      });
+    } finally {
+      setIsLoggingOut(false);
+    }
   };
 
   return (
@@ -187,6 +219,35 @@ export default function ThreadTabs({
           }}
         >
           +
+        </button>
+
+        <button
+          onClick={handleLogout}
+          disabled={isLoggingOut}
+          aria-label="Wyloguj się"
+          className="h-11 px-4 rounded-lg flex-shrink-0 flex items-center justify-center gap-2 font-semibold text-sm transition-all duration-200 shadow-md hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
+          style={{
+            backgroundColor: semanticColors.backgroundSubtle,
+            color: semanticColors.textPrimary,
+            border: `2px solid ${semanticColors.primary}`,
+          }}
+          onMouseEnter={(e) => {
+            if (!isLoggingOut) {
+              e.currentTarget.style.backgroundColor = semanticColors.primary;
+              e.currentTarget.style.color = semanticColors.textOnPrimary;
+              e.currentTarget.style.transform = "scale(1.05)";
+            }
+          }}
+          onMouseLeave={(e) => {
+            if (!isLoggingOut) {
+              e.currentTarget.style.backgroundColor = semanticColors.backgroundSubtle;
+              e.currentTarget.style.color = semanticColors.textPrimary;
+              e.currentTarget.style.transform = "scale(1)";
+            }
+          }}
+        >
+          <span className="text-base">🚪</span>
+          <span>{isLoggingOut ? "Wylogowywanie..." : "Wyloguj"}</span>
         </button>
       </div>
 
