@@ -45,7 +45,7 @@ export default function ResetRequestForm() {
       toast.success("Link wysłany", {
         description: "Sprawdź swoją skrzynkę e-mail.",
       });
-    } catch (error) {
+    } catch {
       toast.error("Błąd", {
         description: "Nie udało się wysłać linku resetującego. Spróbuj ponownie.",
       });

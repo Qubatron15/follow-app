@@ -214,7 +214,7 @@ export class TranscriptsService {
       }
 
       // Step 2: Verify thread ownership (BOLA protection)
-      const threadUserId = (transcript.threads as any).user_id;
+      const threadUserId = transcript.threads.user_id;
       if (threadUserId !== userId) {
         throw new TranscriptServiceError(
           TRANSCRIPT_ERRORS.TRANSCRIPT_NOT_FOUND,
@@ -284,7 +284,7 @@ export class TranscriptsService {
       }
 
       // Step 2: Verify thread ownership (BOLA protection)
-      const threadUserId = (transcript.threads as any).user_id;
+      const threadUserId = transcript.threads.user_id;
       if (threadUserId !== userId) {
         throw new TranscriptServiceError(
           TRANSCRIPT_ERRORS.TRANSCRIPT_NOT_FOUND,
@@ -369,7 +369,7 @@ export class TranscriptsService {
       }
 
       // Step 2: Verify thread ownership (BOLA protection)
-      const threadUserId = (transcript.threads as any).user_id;
+      const threadUserId = transcript.threads.user_id;
       if (threadUserId !== userId) {
         throw new TranscriptServiceError(
           TRANSCRIPT_ERRORS.TRANSCRIPT_NOT_FOUND,

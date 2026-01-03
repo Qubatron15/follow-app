@@ -61,16 +61,32 @@ export default function AddActionPointModal({ threadId, isOpen, onClose, onSucce
     <div
       className="fixed inset-0 z-50 flex items-center justify-center backdrop-blur-sm"
       style={{ backgroundColor: "rgba(34, 56, 67, 0.7)" }}
-      onClick={handleClose}
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="modal-title"
     >
+      {/* Backdrop overlay - click to close */}
       <div
-        className="rounded-2xl shadow-2xl w-full max-w-md mx-4 p-6"
+        className="absolute inset-0"
+        onClick={handleClose}
+        onKeyDown={(e) => {
+          if (e.key === "Escape") {
+            handleClose();
+          }
+        }}
+        role="button"
+        tabIndex={0}
+        aria-label="Zamknij modal"
+      />
+      {/* Modal content */}
+      <div
+        className="rounded-2xl shadow-2xl w-full max-w-md mx-4 p-6 relative z-10"
         style={{ backgroundColor: semanticColors.backgroundElevated }}
-        onClick={(e) => e.stopPropagation()}
+        role="document"
       >
         {/* Header */}
         <div className="flex items-center justify-between mb-5">
-          <h2 className="text-2xl font-bold" style={{ color: semanticColors.textPrimary }}>
+          <h2 id="modal-title" className="text-2xl font-bold" style={{ color: semanticColors.textPrimary }}>
             Dodaj Action Point
           </h2>
           <button

@@ -51,7 +51,7 @@ export default function ResetConfirmForm({ token }: ResetConfirmFormProps) {
       toast.success("Hasło zmienione", {
         description: "Możesz teraz zalogować się przy użyciu nowego hasła.",
       });
-    } catch (error) {
+    } catch {
       toast.error("Błąd", {
         description: "Nie udało się zmienić hasła. Link mógł wygasnąć.",
       });

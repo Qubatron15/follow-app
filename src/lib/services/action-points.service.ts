@@ -256,7 +256,7 @@ export class ActionPointsService {
       }
 
       // Step 2: Verify thread ownership (BOLA protection)
-      const threadUserId = (actionPoint.threads as any).user_id;
+      const threadUserId = actionPoint.threads.user_id;
       if (threadUserId !== userId) {
         throw new ActionPointServiceError(
           ACTION_POINT_ERRORS.ACTION_POINT_NOT_FOUND,
@@ -354,7 +354,7 @@ export class ActionPointsService {
       }
 
       // Step 2: Verify thread ownership (BOLA protection)
-      const threadUserId = (actionPoint.threads as any).user_id;
+      const threadUserId = actionPoint.threads.user_id;
       if (threadUserId !== userId) {
         throw new ActionPointServiceError(
           ACTION_POINT_ERRORS.ACTION_POINT_NOT_FOUND,

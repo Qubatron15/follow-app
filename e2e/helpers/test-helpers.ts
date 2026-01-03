@@ -57,10 +57,10 @@ export async function setupAuthenticatedSession(page: Page, email: string, passw
 export async function createThread(page: Page, threadName?: string): Promise<string> {
   const dashboardPage = new DashboardPage(page);
   const threadTabs = dashboardPage.getThreadTabs();
-  
+
   const name = threadName || generateUniqueName("Thread");
   await threadTabs.createThread(name);
-  
+
   return name;
 }
 
@@ -71,17 +71,13 @@ export async function createThread(page: Page, threadName?: string): Promise<str
  * @param isCompleted - Whether the action point is completed
  * @returns Action point title
  */
-export async function createActionPoint(
-  page: Page,
-  title?: string,
-  isCompleted = false
-): Promise<string> {
+export async function createActionPoint(page: Page, title?: string, isCompleted = false): Promise<string> {
   const dashboardPage = new DashboardPage(page);
   const actionPoints = dashboardPage.getActionPoints();
-  
+
   const apTitle = title || generateUniqueName("AP");
   await actionPoints.createActionPoint(apTitle, isCompleted);
-  
+
   return apTitle;
 }
 
@@ -92,10 +88,8 @@ export async function createActionPoint(
  * @param timeout - Timeout in milliseconds
  */
 export async function waitForToast(page: Page, message: string | RegExp, timeout = 5000): Promise<void> {
-  const toastLocator = typeof message === "string" 
-    ? page.getByText(message) 
-    : page.getByText(message);
-  
+  const toastLocator = typeof message === "string" ? page.getByText(message) : page.getByText(message);
+
   await toastLocator.waitFor({ state: "visible", timeout });
 }
 
@@ -106,7 +100,7 @@ export async function waitForToast(page: Page, message: string | RegExp, timeout
 export async function clearAllThreads(page: Page): Promise<void> {
   const dashboardPage = new DashboardPage(page);
   await dashboardPage.goto();
-  
+
   // This would require implementing delete functionality in POM
   // For now, this is a placeholder
   console.warn("clearAllThreads not fully implemented - requires delete thread functionality");
