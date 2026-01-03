@@ -6,8 +6,8 @@
 export const TEST_CONFIG = {
   // Test user credentials
   credentials: {
-    email: process.env.TEST_EMAIL || "qubatron15@gmail.com",
-    password: process.env.TEST_PASSWORD || "sajgonki",
+    email: process.env.TEST_EMAIL || "test.user@email.com",
+    password: process.env.TEST_PASSWORD || "Password1!",
   },
 
   // Base URL
