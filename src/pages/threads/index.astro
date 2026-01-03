@@ -7,9 +7,9 @@ import DashboardThreadsPage from "@/components/DashboardThreadsPage";
 const user = Astro.locals.user;
 
 // If no user session, redirect to login
-// if (!user) {
-//   return Astro.redirect("/login");
-// }
+if (!user) {
+  return Astro.redirect("/login");
+}
 
 export const prerender = false;
 ---
