@@ -203,6 +203,7 @@ export default function ThreadTabs({
             e.currentTarget.style.backgroundColor = semanticColors.primary;
             e.currentTarget.style.transform = "scale(1)";
           }}
+          data-test-id="create-thread-button"
         >
           +
         </button>
@@ -231,6 +232,7 @@ export default function ThreadTabs({
               e.currentTarget.style.transform = "scale(1)";
             }
           }}
+          data-test-id="logout-button"
         >
           <span className="text-base">🚪</span>
           <span>{isLoggingOut ? "Wylogowywanie..." : "Wyloguj"}</span>

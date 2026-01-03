@@ -109,6 +109,7 @@ export default function CreateThreadModal({ isOpen, onClose, onThreadCreated }: 
                 aria-describedby={displayError ? errorId : undefined}
                 disabled={isCreating}
                 autoFocus
+                data-test-id="create-thread-name-input"
               />
 
               {/* Character counter */}
@@ -131,7 +132,11 @@ export default function CreateThreadModal({ isOpen, onClose, onThreadCreated }: 
             <Button type="button" variant="outline" onClick={handleClose} disabled={isCreating}>
               Anuluj
             </Button>
-            <Button type="submit" disabled={isCreating || name.trim().length === 0 || isOverLimit}>
+            <Button
+              type="submit"
+              disabled={isCreating || name.trim().length === 0 || isOverLimit}
+              data-test-id="create-thread-submit-button"
+            >
               {isCreating ? "Tworzenie..." : "Utwórz wątek"}
             </Button>
           </DialogFooter>

@@ -126,6 +126,7 @@ export default function AddActionPointModal({ threadId, isOpen, onClose, onSucce
               maxLength={255}
               disabled={isCreating}
               required
+              data-test-id="add-action-point-title-input"
             />
             <p className="text-xs font-medium mt-2" style={{ color: semanticColors.textMuted }}>
               {title.length}/255 znaków
@@ -143,6 +144,7 @@ export default function AddActionPointModal({ threadId, isOpen, onClose, onSucce
               style={{
                 accentColor: semanticColors.primary,
               }}
+              data-test-id="add-action-point-completed-checkbox"
             />
             <label
               htmlFor="ap-completed"
@@ -194,6 +196,7 @@ export default function AddActionPointModal({ threadId, isOpen, onClose, onSucce
                   e.currentTarget.style.backgroundColor = semanticColors.primary;
                 }
               }}
+              data-test-id="add-action-point-submit-button"
             >
               {isCreating ? "Dodawanie..." : "Dodaj"}
             </button>

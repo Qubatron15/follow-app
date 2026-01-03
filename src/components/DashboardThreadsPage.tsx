@@ -297,6 +297,7 @@ function DashboardThreadsContent() {
                   onMouseLeave={(e) => {
                     e.currentTarget.style.backgroundColor = semanticColors.primary;
                   }}
+                  data-test-id="open-add-action-point-modal-button"
                 >
                   <Plus className="w-4 h-4" />
                   Dodaj AP

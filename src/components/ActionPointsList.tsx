@@ -113,6 +113,7 @@ export default function ActionPointsList({ actionPoints, onRefetch }: ActionPoin
             backgroundColor: ap.isCompleted ? semanticColors.backgroundSubtle : semanticColors.backgroundElevated,
             border: `2px solid ${ap.isCompleted ? semanticColors.border : semanticColors.borderSubtle}`,
           }}
+          data-test-id="action-point-item"
         >
           {/* Checkbox for completion status */}
           <button
@@ -167,6 +168,7 @@ export default function ActionPointsList({ actionPoints, onRefetch }: ActionPoin
                   color: ap.isCompleted ? semanticColors.textMuted : semanticColors.textPrimary,
                   textDecoration: ap.isCompleted ? "line-through" : "none",
                 }}
+                data-test-id="action-point-title"
               >
                 {ap.title}
               </p>

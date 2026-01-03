@@ -107,6 +107,7 @@ export default function LoginForm({ redirectTo = "/" }: LoginFormProps) {
             aria-invalid={!!errors.email}
             disabled={isLoading}
             autoComplete="email"
+            data-test-id="login-email-input"
           />
           {errors.email && (
             <p className="text-xs mt-1" style={{ color: semanticColors.error }}>
@@ -132,6 +133,7 @@ export default function LoginForm({ redirectTo = "/" }: LoginFormProps) {
             aria-invalid={!!errors.password}
             disabled={isLoading}
             autoComplete="current-password"
+            data-test-id="login-password-input"
           />
           {errors.password && (
             <p className="text-xs mt-1" style={{ color: semanticColors.error }}>
@@ -149,6 +151,7 @@ export default function LoginForm({ redirectTo = "/" }: LoginFormProps) {
             backgroundColor: semanticColors.primary,
             color: semanticColors.textOnPrimary,
           }}
+          data-test-id="login-submit-button"
         >
           {isLoading ? "Logowanie..." : "Zaloguj się"}
         </Button>
