@@ -31,14 +31,7 @@ export const TEST_CONFIG = {
  * Generate timestamp for unique names
  */
 export function generateTimestamp(): string {
-  return new Date().toLocaleString("pl-PL", {
-    year: "numeric",
-    month: "2-digit",
-    day: "2-digit",
-    hour: "2-digit",
-    minute: "2-digit",
-    second: "2-digit",
-  });
+  return new Date().getTime().toString();
 }
 
 /**

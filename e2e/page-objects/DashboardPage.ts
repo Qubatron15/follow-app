@@ -223,7 +223,7 @@ export class ActionPointsComponent {
    */
   async waitForActionPointsToLoad() {
     // Wait for either action points to appear or empty state
-    await this.page.waitForSelector('[data-test-id="action-point-item"], :text("Brak Action Points")', {
+    await this.page.waitForSelector('[data-testid="action-point-item"], :text("Brak Action Points")', {
       timeout: 5000,
     });
   }
