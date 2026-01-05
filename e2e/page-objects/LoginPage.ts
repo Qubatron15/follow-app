@@ -48,6 +48,9 @@ export class LoginPage {
       { timeout: 10000 }
     );
 
+    // Wait 1 second before filling the form to ensure full page stability
+    await this.page.waitForTimeout(1000);
+
     // Fill inputs with a small delay to ensure React state is ready
     await this.emailInput.fill(email);
     await this.page.waitForTimeout(100);
