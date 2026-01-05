@@ -44,29 +44,7 @@ export const registerSchema = z
   });
 
 /**
- * Password reset request schema
- */
-export const resetRequestSchema = z.object({
-  email: emailSchema,
-});
-
-/**
- * Password reset confirmation schema
- */
-export const resetConfirmSchema = z
-  .object({
-    password: passwordSchema,
-    confirmPassword: z.string().min(1, "Potwierdzenie hasła jest wymagane"),
-  })
-  .refine((data) => data.password === data.confirmPassword, {
-    message: "Hasła muszą być identyczne",
-    path: ["confirmPassword"],
-  });
-
-/**
  * Type exports
  */
 export type LoginFormData = z.infer<typeof loginSchema>;
 export type RegisterFormData = z.infer<typeof registerSchema>;
-export type ResetRequestFormData = z.infer<typeof resetRequestSchema>;
-export type ResetConfirmFormData = z.infer<typeof resetConfirmSchema>;

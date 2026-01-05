@@ -118,12 +118,7 @@ export default function LoginForm({ redirectTo = "/" }: LoginFormProps) {
 
         {/* Password field */}
         <div className="space-y-2">
-          <div className="flex items-center justify-between">
-            <Label htmlFor="password">Hasło</Label>
-            <a href="/reset" className="text-xs hover:underline" style={{ color: semanticColors.primary }}>
-              Zapomniałeś hasła?
-            </a>
-          </div>
+          <Label htmlFor="password">Hasło</Label>
           <Input
             id="password"
             type="password"
