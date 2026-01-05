@@ -1,4 +1,4 @@
-import { Page, Locator } from "@playwright/test";
+import type { Page, Locator } from "@playwright/test";
 
 /**
  * Page Object Model for Login Page
@@ -34,8 +34,36 @@ export class LoginPage {
    * @param password - User password
    */
   async login(email: string, password: string) {
+    // Wait for inputs to be enabled and ready for interaction
+    await this.emailInput.waitFor({ state: "visible", timeout: 10000 });
+    await this.passwordInput.waitFor({ state: "visible", timeout: 10000 });
+
+    // Ensure inputs are not disabled (React hydration complete)
+    await this.page.waitForFunction(
+      () => {
+        const emailInput = document.querySelector('[data-testid="login-email-input"]') as HTMLInputElement;
+        const passwordInput = document.querySelector('[data-testid="login-password-input"]') as HTMLInputElement;
+        return emailInput && passwordInput && !emailInput.disabled && !passwordInput.disabled;
+      },
+      { timeout: 10000 }
+    );
+
+    // Fill inputs with a small delay to ensure React state is ready
     await this.emailInput.fill(email);
+    await this.page.waitForTimeout(100);
     await this.passwordInput.fill(password);
+    await this.page.waitForTimeout(100);
+
+    // Wait for submit button to be enabled
+    await this.submitButton.waitFor({ state: "visible", timeout: 5000 });
+    await this.page.waitForFunction(
+      () => {
+        const button = document.querySelector('[data-testid="login-submit-button"]') as HTMLButtonElement;
+        return button && !button.disabled;
+      },
+      { timeout: 5000 }
+    );
+
     await this.submitButton.click();
   }
 

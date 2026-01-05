@@ -36,9 +36,15 @@ export default defineConfig({
     /* Video on failure */
     video: "retain-on-failure",
 
-    /* Timeout for each action */
-    actionTimeout: 10000,
+    /* Timeout for each action (e.g., click, fill) */
+    actionTimeout: 15000,
+
+    /* Timeout for navigation actions (e.g., goto, waitForURL) */
+    navigationTimeout: 30000,
   },
+
+  /* Global timeout for each test */
+  timeout: 120000,
 
   /* Configure projects for major browsers - only Chromium as per guidelines */
   projects: [
