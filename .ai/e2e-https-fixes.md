@@ -157,7 +157,7 @@ BASE_URL=http://localhost:4321 npm run test:e2e
 ### Production Testing (HTTPS)
 ```bash
 # Run tests against Vercel deployment
-BASE_URL=https://follow-app.vercel.app npm run test:e2e
+BASE_URL=https://follow-app.vercel.app/login npm run test:e2e
 
 # Or use default (already set in playwright.config.ts)
 npm run test:e2e

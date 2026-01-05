@@ -11,7 +11,7 @@ export const TEST_CONFIG = {
   },
 
   // Base URL
-  baseUrl: process.env.BASE_URL || "https://follow-app.vercel.app",
+  baseUrl: process.env.BASE_URL || "https://follow-app.vercel.app/login",
 
   // Timeouts
   timeouts: {
